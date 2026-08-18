@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#8f3f46">
+<meta name="description" content="PhisSafe phishing website detection team execution and responsibility guide">
+<title>PhisSafe — Phishing Website Detection | Team Execution Guide</title>
+<style>
+:root{
+  --wine:#8f3f46;
+  --wine-dark:#73333a;
+  --rose:#b85b63;
+  --rose-soft:#f8e9ea;
+  --rose-pale:#fcf4f4;
+  --cream:#fffaf9;
+  --paper:#ffffff;
+  --ink:#2b2527;
+  --muted:#6f6669;
+  --line:#eadcdd;
+  --line-strong:#dcc6c8;
+  --green:#43785c;
+  --green-bg:#eef7f1;
+  --amber:#a66a25;
+  --amber-bg:#fbf4e9;
+  --red:#a0444b;
+  --red-bg:#fdf0f1;
+  --shadow:0 10px 28px rgba(96,45,50,.08);
+  --shadow-hover:0 16px 36px rgba(96,45,50,.13);
+  --radius:18px;
+  --max:1180px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 0%,rgba(184,91,99,.07),transparent 28rem),
+    radial-gradient(circle at 92% 12%,rgba(143,63,70,.055),transparent 26rem),
+    var(--cream);
+  line-height:1.68;
+  overflow-x:hidden;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:linear-gradient(rgba(143,63,70,.018) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(143,63,70,.018) 1px,transparent 1px);
+  background-size:38px 38px;
+  mask-image:linear-gradient(to bottom,black,transparent 75%);
+}
+a{color:var(--wine);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{width:min(var(--max),calc(100% - 40px));margin:auto}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  color:#fff;
+  padding:70px 0 58px;
+  background:
+    radial-gradient(circle at 82% 18%,rgba(255,255,255,.16),transparent 16rem),
+    radial-gradient(circle at 12% 120%,rgba(255,255,255,.08),transparent 22rem),
+    linear-gradient(135deg,#8b4148 0%,#9f4c54 54%,#874047 100%);
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  width:430px;height:430px;
+  right:-150px;bottom:-250px;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:50%;
+  box-shadow:0 0 0 55px rgba(255,255,255,.025),0 0 0 110px rgba(255,255,255,.018);
+}
+.hero .container{position:relative;z-index:1}
+.hero h1{
+  max-width:900px;
+  font-size:clamp(32px,5vw,54px);
+  line-height:1.06;
+  letter-spacing:-.035em;
+  margin:16px 0 15px;
+}
+.hero .subtitle{
+  max-width:860px;
+  font-size:clamp(16px,2vw,19px);
+  color:#fceff0;
+  margin:0;
+}
+.badges{display:flex;flex-wrap:wrap;gap:9px;margin-top:25px}
+.badge{
+  padding:7px 12px;
+  border:1px solid rgba(255,255,255,.27);
+  border-radius:999px;
+  background:rgba(255,255,255,.095);
+  color:#fff;
+  font-size:12.5px;
+  backdrop-filter:blur(8px);
+}
+.hero .badge:first-child{
+  background:#fff;
+  color:var(--wine-dark);
+  border-color:#fff;
+  font-weight:800;
+  letter-spacing:.06em;
+}
+
+nav{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(255,250,249,.94);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 4px 18px rgba(74,35,39,.06);
+  backdrop-filter:blur(16px);
+}
+.navinner{
+  width:min(var(--max),calc(100% - 40px));
+  margin:auto;
+  padding:9px 0;
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.navinner::-webkit-scrollbar{display:none}
+.navinner a{
+  white-space:nowrap;
+  padding:8px 11px;
+  border-radius:10px;
+  color:#5d4e51;
+  font-size:12.5px;
+  font-weight:650;
+}
+.navinner a:hover{background:var(--rose-soft);color:var(--wine);text-decoration:none}
+
+section{padding:52px 0 6px}
+h2{
+  font-size:clamp(25px,3vw,32px);
+  line-height:1.2;
+  letter-spacing:-.025em;
+  color:var(--wine-dark);
+  margin:0 0 10px;
+}
+h2:after{
+  content:"";
+  display:block;
+  width:44px;height:3px;
+  margin-top:10px;
+  border-radius:99px;
+  background:var(--rose);
+}
+h3{font-size:20px;line-height:1.3;color:var(--wine-dark);margin:0 0 8px}
+h4{color:#4b3437;margin:19px 0 7px}
+.lead{color:var(--muted);max-width:900px}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+
+.card{
+  min-width:0;
+  background:rgba(255,255,255,.94);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:23px;
+  box-shadow:var(--shadow);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:var(--shadow-hover);
+  border-color:var(--line-strong);
+}
+.card.owner{
+  border-top:4px solid var(--rose);
+  padding-top:21px;
+}
+.card .role{
+  color:var(--wine);
+  font-weight:800;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+}
+
+.callout{
+  border-radius:14px;
+  padding:16px 18px;
+  margin:18px 0;
+  border:1px solid;
+}
+.info{background:var(--rose-pale);border-color:#efd3d5}
+.success{background:var(--green-bg);border-color:#cce4d4}
+.warn{background:var(--amber-bg);border-color:#ecd6b7}
+.danger{background:var(--red-bg);border-color:#efcacc}
+.purple{background:#f7f2f5;border-color:#e6d7dc}
+
+.flow{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:23px 0;
+  align-items:stretch;
+}
+.flow .step{
+  position:relative;
+  min-width:0;
+  min-height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:linear-gradient(180deg,#fff,#fff8f7);
+  border:1px solid var(--line);
+  padding:12px 14px;
+  border-radius:13px;
+  color:#4b3639;
+  font-weight:750;
+  box-shadow:0 4px 14px rgba(96,45,50,.05);
+}
+.flow .arrow{
+  display:none;
+}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+th,td{
+  padding:13px 14px;
+  border-bottom:1px solid var(--line);
+  border-right:1px solid var(--line);
+  vertical-align:top;
+  text-align:left;
+}
+th:last-child,td:last-child{border-right:0}
+th{
+  background:#f7ecec;
+  color:var(--wine-dark);
+  font-size:12.5px;
+  letter-spacing:.02em;
+}
+td{font-size:14px}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fffafa}
+
+.code{
+  background:#2f2527;
+  color:#f8eded;
+  border:1px solid #4c393c;
+  border-radius:13px;
+  padding:17px;
+  overflow:auto;
+  font:13px/1.65 "SFMono-Regular",Consolas,Monaco,monospace;
+  box-shadow:inset 0 1px rgba(255,255,255,.04);
+}
+code{
+  background:#f6e9ea;
+  color:#71343b;
+  border:1px solid #ecd8d9;
+  border-radius:5px;
+  padding:2px 5px;
+}
+
+.role-header{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:flex-start;
+}
+.pill{
+  display:inline-block;
+  flex:0 0 auto;
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+.pill.primary{background:#f3dfe1;color:var(--wine-dark)}
+.pill.secondary{background:#f0e8eb;color:#70515a}
+
+.phase{
+  position:relative;
+  padding:22px 22px 22px 80px;
+  margin:18px 0;
+  background:rgba(255,255,255,.7);
+  border:1px solid var(--line);
+  border-radius:17px;
+  box-shadow:0 5px 18px rgba(96,45,50,.045);
+}
+.phase-num{
+  position:absolute;
+  left:22px;
+  top:22px;
+  width:40px;height:40px;
+  border-radius:12px;
+  background:var(--rose-soft);
+  border:1px solid #edcfd1;
+  color:var(--wine-dark);
+  display:grid;
+  place-items:center;
+  font-weight:850;
+}
+.phase:not(:last-child):after{
+  content:"";
+  position:absolute;
+  left:41px;
+  top:63px;
+  height:calc(100% - 35px);
+  border-left:2px dashed #e7c8ca;
+}
+
+.checklist{list-style:none;padding-left:0}
+.checklist li{
+  margin:8px 0;
+  padding-left:28px;
+  position:relative;
+}
+.checklist li:before{
+  content:"✓";
+  position:absolute;
+  left:0;
+  top:1px;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:#f4e1e2;
+  color:var(--wine);
+  display:grid;
+  place-items:center;
+  font-size:11px;
+  font-weight:900;
+}
+.two-col{columns:2;column-gap:34px}
+.two-col li{break-inside:avoid}
+.small{font-size:13px;color:var(--muted)}
+.highlight{font-weight:750;color:var(--wine-dark)}
+
+.footer{
+  margin-top:60px;
+  padding:36px 0;
+  background:#6f343a;
+  color:#f8e9ea;
+}
+.footer .small{color:#e6c9cc}
+
+@media(max-width:980px){
+  .container{width:min(var(--max),calc(100% - 32px))}
+  .navinner{width:calc(100% - 32px)}
+  .grid3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .flow{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:720px){
+  body{font-size:15px}
+  .container{width:calc(100% - 24px)}
+  .navinner{width:calc(100% - 24px);padding:7px 0}
+  .hero{padding:48px 0 38px}
+  .hero h1{font-size:34px}
+  .hero .subtitle{font-size:15.5px}
+  .badges{gap:7px}
+  .badge{font-size:11.5px;padding:6px 9px}
+  section{padding-top:39px}
+  .grid,.grid3{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr;gap:8px}
+  .flow .step{min-height:52px}
+  .phase{padding:18px 16px 18px 67px}
+  .phase-num{left:15px;top:18px}
+  .phase:not(:last-child):after{left:34px;top:59px}
+  .card{padding:18px}
+  .card.owner{padding-top:17px}
+  .role-header{gap:10px}
+  .role-header h3{font-size:18px}
+  .two-col{columns:1}
+  /* Tables become horizontally scrollable instead of breaking the layout. */
+  table{
+    display:block;
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    white-space:normal;
+  }
+  th,td{min-width:145px}
+  th:first-child,td:first-child{min-width:115px}
+  .code{font-size:12px}
+}
+
+@media(max-width:430px){
+  .hero h1{font-size:29px}
+  h2{font-size:24px}
+  h3{font-size:18px}
+  .hero .badge:first-child{width:100%;text-align:center}
+  .phase{padding-left:16px;padding-top:70px}
+  .phase-num{left:16px;top:16px}
+  .phase:not(:last-child):after{display:none}
+  .role-header{flex-direction:column}
+  .pill{align-self:flex-start}
+  th,td{min-width:160px;padding:11px 12px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .card{transition:none}
+}
+
+@media print{
+  nav{display:none}
+  body{background:white}
+  body:before{display:none}
+  .hero{color:#000;background:white;border-bottom:2px solid #73333a}
+  .hero .subtitle{color:#333}
+  .hero .badge{color:#333;border-color:#ccc;background:white}
+  .card,.phase{box-shadow:none}
+  section{break-inside:avoid}
+}
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <div class="badge">TEAM EXECUTION DOCUMENT • SELF-SUFFICIENT GUIDE</div>
+    <h1>PhisSafe — Phishing Website Detection</h1>
+    <p class="subtitle">
+      A complete member-by-member implementation guide covering responsibilities, dependencies,
+      development order, technologies, deliverables, integration contracts, testing, documentation,
+      and viva readiness.
+    </p>
+    <div class="badges">
+      <span class="badge">Frontend: Next.js</span>
+      <span class="badge">API: Flask / Python</span>
+      <span class="badge">ML: Scikit-learn</span>
+      <span class="badge">Feature Extraction: Python + BeautifulSoup</span>
+      <span class="badge">Database/Auth: Supabase + PostgreSQL</span>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="navinner">
+    <a href="#overview">Overview</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#roles">Roles</a>
+    <a href="#phases">Phases</a>
+    <a href="#sana">Sana</a>
+    <a href="#fizza">Fizza</a>
+    <a href="#maseera">Maseera</a>
+    <a href="#rayyan">Rayyan</a>
+    <a href="#contract">Integration Contract</a>
+    <a href="#testing">Testing</a>
+    <a href="#deliverables">Deliverables</a>
+    <a href="#viva">Viva</a>
+</div>
+</nav>
+
+<main class="container">
+
+<section id="overview">
+  <h2>1. Project in One Minute</h2>
+  <p class="lead">
+    PhisSafe accepts a website URL, extracts measurable characteristics from the URL and website,
+    passes those characteristics to a trained machine-learning model, returns a phishing/legitimate
+    prediction, explains important indicators to the user, and stores scan information for history.
+  </p>
+
+  <div class="flow">
+    <div class="step">User enters URL</div><div class="arrow">→</div>
+    <div class="step">Next.js</div><div class="arrow">→</div>
+    <div class="step">Flask API</div><div class="arrow">→</div>
+    <div class="step">Feature Extraction</div><div class="arrow">→</div>
+    <div class="step">ML Model</div><div class="arrow">→</div>
+    <div class="step">Prediction + Explanation</div><div class="arrow">→</div>
+    <div class="step">Next.js Result</div><div class="arrow">→</div>
+    <div class="step">Supabase/PostgreSQL</div>
+  </div>
+
+  <div class="callout info">
+    <strong>Core principle:</strong> The ML model does not directly understand a URL as a human does.
+    The feature-extraction layer converts the website into a structured feature vector. The model
+    learns from the same feature definitions during training and uses them again during live scans.
+  </div>
+</section>
+
+<section id="architecture">
+  <h2>2. System Architecture</h2>
+  <div class="card">
+    <div class="code">
+USER
+  |
+  v
+NEXT.JS FRONTEND
+  |  URL submitted
+  v
+FLASK API
+  |
+  v
+LIVE FEATURE EXTRACTION
+  |-- URL analysis
+  |-- HTML analysis (BeautifulSoup)
+  |-- DNS checks
+  |-- SSL/TLS checks
+  |-- other agreed indicators
+  |
+  v
+FEATURE VECTOR
+  |
+  v
+TRAINED SCIKIT-LEARN MODEL
+  |-- Logistic Regression
+  |-- SVM
+  |-- Random Forest
+  |
+  v
+PREDICTION + SCORE + IMPORTANT INDICATORS
+  |
+  +------> NEXT.JS RESULT / EXPLAINABILITY UI
+  |
+  +------> SUPABASE / POSTGRESQL
+              |-- authentication
+              |-- users
+              |-- scan history
+              |-- reports / stored results
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Frontend — Next.js</h3>
+      <p>Handles what the user sees and interacts with: URL input, scan button, result page, history,
+      dashboards and explanation of the prediction.</p>
+    </div>
+    <div class="card">
+      <h3>API — Flask</h3>
+      <p>Acts as the bridge between the JavaScript/Next.js application and the Python feature-extraction
+      and ML services.</p>
+    </div>
+    <div class="card">
+      <h3>Feature Extraction — Python</h3>
+      <p>Inspects the supplied website and turns useful characteristics into the exact structured inputs
+      expected by the ML model.</p>
+    </div>
+    <div class="card">
+      <h3>ML — Scikit-learn</h3>
+      <p>Learns patterns from labelled phishing/legitimate examples and produces a classification for a
+      new feature vector.</p>
+    </div>
+    <div class="card">
+      <h3>Database/Auth — Supabase + PostgreSQL</h3>
+      <p>Stores user-related data and scan history and supports authentication and relational data management.</p>
+    </div>
+    <div class="card">
+      <h3>Explainability</h3>
+      <p>Converts technical model output into understandable information such as risk score and relevant
+      website indicators. A model prediction should not be presented as an unexplained black box.</p>
+    </div>
+  </div>
+</section>
+
+<section id="roles">
+  <h2>3. Team Responsibility Matrix</h2>
+  <p class="lead">Primary Focus means owner. Secondary Focus means collaborator who must understand and support that area.</p>
+  <table>
+    <thead><tr><th>Member</th><th>Primary Focus / Owner</th><th>Secondary Focus / Collaborator</th><th>Technologies</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Sana</strong></td><td><strong>ML Model Engineering</strong><br>Dataset research, model comparison (SVM, RF, Logistic Regression), optimization, model export.</td><td><strong>Next.js UI & Explainability</strong><br>Integrating model outputs, probabilities/flags and explanation into the dashboard.</td><td>Python, Scikit-learn, Next.js</td></tr>
+      <tr><td><strong>Fizza</strong></td><td><strong>API Server & Integration</strong><br>Flask endpoints and data pipelines between Next.js and Python services.</td><td><strong>ML Pipeline Evaluation</strong><br>Testing and verifying different models in the Python runtime.</td><td>Python/Flask, JavaScript, CSS</td></tr>
+      <tr><td><strong>Maseera</strong></td><td><strong>Live Feature Extraction</strong><br>Scraper logic, HTML analysis, BeautifulSoup, DNS/SSL validation.</td><td><strong>Frontend Page Development</strong><br>UI pages for URL scanning, user histories and admin panels.</td><td>Python, BeautifulSoup, Next.js, Tailwind CSS</td></tr>
+      <tr><td><strong>Rayyan</strong></td><td><strong>Database & Auth Systems</strong><br>Supabase tables, relational logic, scan histories and reports.</td><td><strong>Feature Extractor Refinement</strong><br>Domain indicators and validation/safety rules.</td><td>PostgreSQL/Supabase, SQL, Next.js</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="phases">
+  <h2>4. Development Order — When to Do What</h2>
+  <p class="lead">
+    Work should progress in dependency order. Do not wait for every screen to be finished before building
+    the ML and API foundations. The phases below are the recommended execution sequence. If the college
+    provides fixed dates, map those dates onto these phases.
+  </p>
+
+  <div class="phase">
+    <div class="phase-num">1</div>
+    <h3>Phase 1 — Requirements & Contract Definition</h3>
+    <p><strong>All members together.</strong> Agree on the exact feature list, prediction labels, API format,
+    database fields, folder structure, Git branches and definition of done.</p>
+    <ul class="checklist">
+      <li>Confirm prediction classes: e.g. <code>phishing</code> and <code>legitimate</code>.</li>
+      <li>Freeze the first version of the feature list and feature order.</li>
+      <li>Decide which features are static/dataset-based and which are available during live scanning.</li>
+      <li>Decide API request/response JSON format.</li>
+      <li>Decide database tables and fields.</li>
+      <li>Create a shared README and issue/task board.</li>
+    </ul>
+    <div class="callout danger"><strong>Gate:</strong> No one should independently change the feature names/order or API response structure after this without informing the whole team.</div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">2</div>
+    <h3>Phase 2 — Dataset + Feature Specification</h3>
+    <p><strong>Sana owns ML; Maseera and Rayyan collaborate.</strong></p>
+    <ul class="checklist">
+      <li>Obtain and document the dataset source and licence/usage conditions.</li>
+      <li>Inspect columns, labels, missing values, duplicates and class distribution.</li>
+      <li>Map dataset features to the features that can be calculated during live scanning.</li>
+      <li>Document every feature: name, meaning, type, allowed values and extraction method.</li>
+      <li>Identify features that require DNS, SSL, HTML or external domain information.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">3</div>
+    <h3>Phase 3 — ML Baseline & Model Comparison</h3>
+    <p><strong>Sana owns; Fizza evaluates.</strong></p>
+    <ul class="checklist">
+      <li>Clean and preprocess the dataset.</li>
+      <li>Split data into training and test sets without data leakage.</li>
+      <li>Train Logistic Regression, SVM and Random Forest baselines.</li>
+      <li>Evaluate accuracy, precision, recall, F1-score and confusion matrix.</li>
+      <li>Prefer metrics appropriate for phishing detection; recall is important because missed phishing sites are costly.</li>
+      <li>Document the final model-selection decision and its justification.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">4</div>
+    <h3>Phase 4 — Live Feature Extraction</h3>
+    <p><strong>Maseera owns; Rayyan refines.</strong></p>
+    <ul class="checklist">
+      <li>Implement URL parsing and agreed URL-based indicators.</li>
+      <li>Implement safe website fetching.</li>
+      <li>Parse HTML using BeautifulSoup.</li>
+      <li>Implement agreed HTML indicators such as forms, links, scripts and external references where appropriate.</li>
+      <li>Implement DNS checks required by the feature specification.</li>
+      <li>Implement SSL/TLS checks required by the feature specification.</li>
+      <li>Return a structured feature object in the exact order/type expected by the model.</li>
+    </ul>
+    <div class="callout warn"><strong>Security:</strong> A user-supplied URL is untrusted input. Fetching must be controlled and validated. Do not build an endpoint that blindly accesses arbitrary internal/private resources.</div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">5</div>
+    <h3>Phase 5 — Model Packaging</h3>
+    <p><strong>Sana owns; Fizza verifies.</strong></p>
+    <ul class="checklist">
+      <li>Retrain the selected final model on the agreed training data.</li>
+      <li>Save the model and every required preprocessing object.</li>
+      <li>Version the model file.</li>
+      <li>Document the exact feature order and preprocessing pipeline.</li>
+      <li>Verify that a fresh Python process can load the model and predict successfully.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">6</div>
+    <h3>Phase 6 — Flask API</h3>
+    <p><strong>Fizza owns; all technical members integrate.</strong></p>
+    <ul class="checklist">
+      <li>Create health/status endpoint.</li>
+      <li>Create scan/prediction endpoint.</li>
+      <li>Validate incoming request data.</li>
+      <li>Call feature extraction.</li>
+      <li>Call the saved ML model.</li>
+      <li>Return a stable JSON response.</li>
+      <li>Handle errors without exposing internal stack traces to users.</li>
+      <li>Test the endpoint independently before connecting the frontend.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">7</div>
+    <h3>Phase 7 — Database, Auth & History</h3>
+    <p><strong>Rayyan owns.</strong></p>
+    <ul class="checklist">
+      <li>Set up Supabase project and PostgreSQL schema.</li>
+      <li>Define user/auth relationship.</li>
+      <li>Create scan-history structure.</li>
+      <li>Store URL, result, score, timestamp and only the feature/report fields actually needed.</li>
+      <li>Implement user-specific history access.</li>
+      <li>Define authorization rules so one user cannot read another user's private history.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">8</div>
+    <h3>Phase 8 — Frontend Integration & Explainability</h3>
+    <p><strong>Maseera builds pages; Sana integrates ML output; Fizza supports API integration.</strong></p>
+    <ul class="checklist">
+      <li>Create URL scan page.</li>
+      <li>Connect scan form to Flask API.</li>
+      <li>Show loading, success and error states.</li>
+      <li>Display prediction and risk/probability only when the model output supports it.</li>
+      <li>Display understandable indicators/reasons.</li>
+      <li>Display scan history from Supabase.</li>
+      <li>Ensure mobile and desktop layouts are usable.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">9</div>
+    <h3>Phase 9 — Full Integration & Testing</h3>
+    <p><strong>All members together.</strong> Test the real end-to-end flow, not only individual modules.</p>
+    <ul class="checklist">
+      <li>Enter a valid URL in the UI.</li>
+      <li>Confirm request reaches Flask.</li>
+      <li>Confirm features are extracted correctly.</li>
+      <li>Confirm feature vector matches model contract.</li>
+      <li>Confirm model loads and predicts.</li>
+      <li>Confirm response reaches Next.js.</li>
+      <li>Confirm result is stored correctly.</li>
+      <li>Confirm history displays the correct user's scans.</li>
+      <li>Test invalid URLs, unavailable sites, timeouts and server errors.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">10</div>
+    <h3>Phase 10 — Documentation, Demo & Viva</h3>
+    <p><strong>All members, with individual ownership of their section.</strong></p>
+    <ul class="checklist">
+      <li>Freeze the working version before the final demo.</li>
+      <li>Document architecture and data flow.</li>
+      <li>Document dataset and model evaluation.</li>
+      <li>Document API endpoints and database schema.</li>
+      <li>Prepare screenshots and test cases.</li>
+      <li>Each member prepares a clear explanation of their primary and secondary roles.</li>
+      <li>Run the complete demo from a clean environment.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sana">
+  <h2>5. Sana — Detailed Execution Guide</h2>
+  <div class="card owner">
+    <div class="role-header"><div><span class="role">Primary Owner</span><h3>ML Model Engineering</h3></div><span class="pill primary">Primary</span></div>
+    <p><strong>Goal:</strong> Produce a validated, reproducible model that accepts the agreed feature vector and returns a reliable phishing/legitimate prediction.</p>
+
+    <h4>5.1 Dataset work</h4>
+    <ul class="checklist">
+      <li>Find/select the project dataset.</li>
+      <li>Record dataset source, number of rows, columns and label definition.</li>
+      <li>Check missing values, duplicates and suspicious/invalid rows.</li>
+      <li>Check phishing vs legitimate class balance.</li>
+      <li>Separate input features from the target label.</li>
+    </ul>
+
+    <h4>5.2 Preprocessing</h4>
+    <ul class="checklist">
+      <li>Decide how missing values are handled.</li>
+      <li>Encode categorical values if present.</li>
+      <li>Scale features where required, especially for algorithms such as SVM and Logistic Regression.</li>
+      <li>Keep preprocessing reproducible and save it together with the model when needed.</li>
+      <li>Avoid data leakage: preprocessing decisions that learn from data must not use the test set.</li>
+    </ul>
+
+    <h4>5.3 Train and compare models</h4>
+    <div class="grid3">
+      <div class="card"><h3>Logistic Regression</h3><p>Simple classification baseline. Fast and comparatively easy to explain.</p></div>
+      <div class="card"><h3>SVM</h3><p>Finds a separating decision boundary and can work well with structured feature data.</p></div>
+      <div class="card"><h3>Random Forest</h3><p>Combines multiple decision trees and can capture nonlinear relationships and feature importance.</p></div>
+    </div>
+
+    <h4>5.4 Evaluation</h4>
+    <p>Do not report only accuracy. Record at least:</p>
+    <ul>
+      <li><strong>Precision:</strong> Among sites predicted phishing, how many were actually phishing?</li>
+      <li><strong>Recall:</strong> Among actual phishing sites, how many did the model catch?</li>
+      <li><strong>F1-score:</strong> Balance between precision and recall.</li>
+      <li><strong>Confusion matrix:</strong> Shows correct and incorrect classifications by class.</li>
+      <li><strong>Accuracy:</strong> Overall proportion classified correctly; interpret carefully if classes are imbalanced.</li>
+    </ul>
+
+    <h4>5.5 Optimization and final model</h4>
+    <ul class="checklist">
+      <li>Choose the best candidate based on the project's evaluation criteria.</li>
+      <li>Tune appropriate hyperparameters.</li>
+      <li>Re-evaluate on held-out data.</li>
+      <li>Record the final model version and parameters.</li>
+      <li>Export model + preprocessing pipeline.</li>
+      <li>Give Fizza a tested model-loading example.</li>
+    </ul>
+
+    <h4>5.6 Secondary — Next.js & Explainability</h4>
+    <ul class="checklist">
+      <li>Understand the exact API response fields.</li>
+      <li>Decide what model output can safely be shown to a user.</li>
+      <li>Help design risk/result cards.</li>
+      <li>Map technical indicators to human-readable explanations.</li>
+      <li>Do not call probability a guaranteed certainty.</li>
+    </ul>
+
+    <div class="callout success"><strong>Your final handoff:</strong> Dataset documentation + preprocessing pipeline + model comparison report + selected model + saved model/preprocessor + feature contract + explanation of model output.</div>
+  </div>
+</section>
+
+<section id="fizza">
+  <h2>6. Fizza — Detailed Execution Guide</h2>
+  <div class="card owner">
+    <div class="role-header"><div><span class="role">Primary Owner</span><h3>API Server & Integration</h3></div><span class="pill primary">Primary</span></div>
+    <p><strong>Goal:</strong> Make the Next.js application, feature extractor and ML model communicate through a stable and testable Python API.</p>
+
+    <h4>6.1 Flask setup</h4>
+    <ul class="checklist">
+      <li>Create the Flask application.</li>
+      <li>Set up configuration/environment variables without committing secrets.</li>
+      <li>Create a health endpoint such as <code>GET /health</code>.</li>
+      <li>Create the scan endpoint according to the agreed API contract.</li>
+    </ul>
+
+    <h4>6.2 Scan request pipeline</h4>
+    <div class="flow">
+      <div class="step">Receive URL</div><div class="arrow">→</div>
+      <div class="step">Validate</div><div class="arrow">→</div>
+      <div class="step">Extract features</div><div class="arrow">→</div>
+      <div class="step">Load model</div><div class="arrow">→</div>
+      <div class="step">Predict</div><div class="arrow">→</div>
+      <div class="step">Return JSON</div>
+    </div>
+
+    <h4>6.3 Error handling</h4>
+    <ul class="checklist">
+      <li>Invalid URL → clear client error.</li>
+      <li>Website cannot be reached → controlled error.</li>
+      <li>Feature extraction failure → controlled error.</li>
+      <li>Model unavailable → server error without leaking internal details.</li>
+      <li>Unexpected exception → log internally and return a safe generic message.</li>
+    </ul>
+
+    <h4>6.4 Secondary — ML Pipeline Evaluation</h4>
+    <ul class="checklist">
+      <li>Test that each saved model can be loaded.</li>
+      <li>Test prediction with known sample feature vectors.</li>
+      <li>Check feature count and ordering.</li>
+      <li>Verify model output types.</li>
+      <li>Help compare model behavior in the actual Python runtime.</li>
+    </ul>
+
+    <h4>6.5 Integration checklist</h4>
+    <ul class="checklist">
+      <li>Give frontend team the endpoint URL and request format.</li>
+      <li>Give frontend team example success and error responses.</li>
+      <li>Test API independently using a REST client or equivalent.</li>
+      <li>Confirm CORS/configuration if frontend and Flask run on different origins.</li>
+    </ul>
+
+    <div class="callout success"><strong>Your final handoff:</strong> Running Flask server + API documentation + sample requests/responses + error handling + integration test results.</div>
+  </div>
+</section>
+
+<section id="maseera">
+  <h2>7. Maseera — Detailed Execution Guide</h2>
+  <div class="card owner">
+    <div class="role-header"><div><span class="role">Primary Owner</span><h3>Live Feature Extraction</h3></div><span class="pill primary">Primary</span></div>
+    <p><strong>Goal:</strong> Convert a submitted website into the exact features used by the ML model.</p>
+
+    <h4>7.1 URL analysis</h4>
+    <p>Implement only features agreed in the shared feature specification. Possible categories include URL length,
+    number of dots/subdomains, suspicious symbols/keywords, IP-address usage and other validated indicators.</p>
+
+    <h4>7.2 HTML analysis with BeautifulSoup</h4>
+    <ul class="checklist">
+      <li>Fetch HTML using controlled timeouts.</li>
+      <li>Parse the HTML with BeautifulSoup.</li>
+      <li>Extract agreed indicators such as forms, links, scripts and external references.</li>
+      <li>Record extraction failures instead of silently producing incorrect values.</li>
+    </ul>
+
+    <h4>7.3 DNS and SSL/TLS checks</h4>
+    <ul class="checklist">
+      <li>Perform only the DNS checks defined in the feature contract.</li>
+      <li>Check required HTTPS/certificate properties where technically appropriate.</li>
+      <li>Remember: HTTPS alone does not prove that a site is legitimate.</li>
+      <li>Use timeouts and safe failure behavior.</li>
+    </ul>
+
+    <h4>7.4 Feature-vector contract</h4>
+    <p>The output must be deterministic and match training:</p>
+    <div class="code">
+{
+  "url_length": 38,
+  "has_https": 1,
+  "has_at_symbol": 0,
+  "num_subdomains": 2,
+  "num_forms": 1,
+  "num_external_links": 7
+  // ...only the agreed features
+}
+    </div>
+    <p class="small">The example above is illustrative. The team must replace it with the actual frozen feature set used by the trained model.</p>
+
+    <h4>7.5 Security requirements</h4>
+    <div class="callout danger">
+      <strong>Critical:</strong> A URL submitted by a user is untrusted. The live scanner must not blindly fetch
+      arbitrary internal/private addresses or become a server-side request forgery (SSRF) risk. Use URL validation,
+      network restrictions, timeouts, redirect controls and safe error handling appropriate to your environment.
+    </div>
+
+    <h4>7.6 Secondary — Frontend pages</h4>
+    <ul class="checklist">
+      <li>Build scan page.</li>
+      <li>Build history page.</li>
+      <li>Build admin/report pages if required by the project scope.</li>
+      <li>Use the agreed UI design system.</li>
+      <li>Keep API calls separate from presentational components where practical.</li>
+    </ul>
+
+    <div class="callout success"><strong>Your final handoff:</strong> Feature-extraction module + feature documentation + safe scanning behavior + sample feature outputs + frontend pages assigned to you.</div>
+  </div>
+</section>
+
+<section id="rayyan">
+  <h2>8. Rayyan — Detailed Execution Guide</h2>
+  <div class="card owner">
+    <div class="role-header"><div><span class="role">Primary Owner</span><h3>Database & Authentication</h3></div><span class="pill primary">Primary</span></div>
+    <p><strong>Goal:</strong> Provide secure, structured persistence for users and scan history.</p>
+
+    <h4>8.1 Database design</h4>
+    <p>At minimum, design the relationships needed for authentication/user identity and scan history.
+    The exact schema should be agreed with the team before implementation.</p>
+
+    <table>
+      <thead><tr><th>Possible entity</th><th>Purpose</th><th>Example fields</th></tr></thead>
+      <tbody>
+        <tr><td>User</td><td>Identifies an authenticated user.</td><td>id, email, created_at</td></tr>
+        <tr><td>Scan</td><td>Stores one website scan.</td><td>id, user_id, url, result, score, created_at</td></tr>
+        <tr><td>Report / details</td><td>Optional deeper scan information.</td><td>scan_id, indicators, summary</td></tr>
+      </tbody>
+    </table>
+
+    <h4>8.2 Authentication</h4>
+    <ul class="checklist">
+      <li>Configure the chosen Supabase authentication method.</li>
+      <li>Ensure users can sign up/sign in/sign out as required.</li>
+      <li>Connect authenticated identity to scan records.</li>
+      <li>Do not store plaintext passwords in your own tables.</li>
+    </ul>
+
+    <h4>8.3 Scan history</h4>
+    <ul class="checklist">
+      <li>Save only the fields the application actually needs.</li>
+      <li>Associate each scan with the correct user.</li>
+      <li>Store timestamps.</li>
+      <li>Provide a query for the current user's history.</li>
+      <li>Enforce access controls so users cannot read another user's records.</li>
+    </ul>
+
+    <h4>8.4 Secondary — Feature Extractor Refinement</h4>
+    <ul class="checklist">
+      <li>Review domain-related indicators with Maseera.</li>
+      <li>Review validation and input-safety rules.</li>
+      <li>Check that stored feature/report data is consistent with the feature contract.</li>
+      <li>Help identify unsafe or unnecessary inputs.</li>
+    </ul>
+
+    <div class="callout success"><strong>Your final handoff:</strong> Supabase/PostgreSQL schema + auth setup + access policies + scan-history queries + documented database fields.</div>
+  </div>
+</section>
+
+<section id="contract">
+  <h2>9. Integration Contract — Everyone Must Follow This</h2>
+  <p class="lead">Most integration failures happen because two members make reasonable but different assumptions. This section prevents that.</p>
+
+  <div class="card">
+    <h3>9.1 Feature Contract</h3>
+    <p>The team must maintain one authoritative feature specification containing:</p>
+    <ul>
+      <li>Feature name</li>
+      <li>Meaning</li>
+      <li>Data type</li>
+      <li>Allowed/range of values</li>
+      <li>How it is calculated</li>
+      <li>Whether it is available during live scanning</li>
+      <li>Its exact position/order in the model input</li>
+    </ul>
+    <div class="callout danger"><strong>Rule:</strong> Training and live scanning must produce the same feature representation. If the model was trained on 25 features, the live pipeline cannot casually send 24 or 26.</div>
+  </div>
+
+  <div class="card">
+    <h3>9.2 API Contract</h3>
+    <p>Use one agreed request/response structure. For example:</p>
+    <div class="code">
+POST /scan
+
+Request
+{
+  "url": "https://example.com"
+}
+
+Success response
+{
+  "prediction": "legitimate",
+  "score": 0.03,
+  "indicators": [
+    {
+      "name": "example indicator",
+      "value": 0,
+      "meaning": "human-readable explanation"
+    }
+  ]
+}
+
+Error response
+{
+  "error": "Unable to scan the supplied URL"
+}
+    </div>
+    <p class="small">This is a template, not a mandatory final schema. Freeze the actual schema before frontend/backend integration.</p>
+  </div>
+
+  <div class="card">
+    <h3>9.3 Database Contract</h3>
+    <p>Agree on field names before writing frontend queries. At minimum, every scan should be traceable to the correct user and timestamp.</p>
+  </div>
+
+  <div class="card">
+    <h3>9.4 Git & Collaboration Rules</h3>
+    <ul class="checklist">
+      <li>Each member works on a feature branch.</li>
+      <li>Use meaningful commit messages.</li>
+      <li>Pull/rebase or otherwise synchronize before opening a merge request/pull request according to the team's chosen workflow.</li>
+      <li>Do not commit secrets, API keys, database passwords or private credentials.</li>
+      <li>Do not silently modify another member's contract.</li>
+      <li>Before merging, test the affected module.</li>
+      <li>Keep README/setup instructions updated when dependencies or environment variables change.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="testing">
+  <h2>10. Testing Strategy</h2>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Unit Testing</h3>
+      <ul>
+        <li>Test individual feature calculations.</li>
+        <li>Test URL validation.</li>
+        <li>Test model loading/prediction.</li>
+        <li>Test database helper functions.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>API Testing</h3>
+      <ul>
+        <li>Valid URL request.</li>
+        <li>Missing URL.</li>
+        <li>Malformed URL.</li>
+        <li>Unavailable website.</li>
+        <li>Feature-extraction failure.</li>
+        <li>Model failure.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Integration Testing</h3>
+      <ul>
+        <li>Next.js → Flask.</li>
+        <li>Flask → feature extraction.</li>
+        <li>Feature extraction → ML.</li>
+        <li>ML → Flask → Next.js.</li>
+        <li>Result → Supabase.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Security Testing</h3>
+      <ul>
+        <li>Untrusted URL handling.</li>
+        <li>Access control for scan history.</li>
+        <li>No secrets in source control.</li>
+        <li>Timeout/redirect controls.</li>
+        <li>Safe error messages.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:25px">End-to-End Acceptance Test</h3>
+  <table>
+    <thead><tr><th>Step</th><th>Expected result</th><th>Owner(s)</th></tr></thead>
+    <tbody>
+      <tr><td>1. User logs in</td><td>Authenticated session is created.</td><td>Rayyan + Frontend</td></tr>
+      <tr><td>2. User enters URL</td><td>Frontend validates basic input and enables scan.</td><td>Maseera</td></tr>
+      <tr><td>3. Scan request</td><td>Next.js sends agreed JSON to Flask.</td><td>Fizza</td></tr>
+      <tr><td>4. Feature extraction</td><td>Exact agreed features are generated.</td><td>Maseera</td></tr>
+      <tr><td>5. Prediction</td><td>Saved model returns expected output.</td><td>Sana + Fizza</td></tr>
+      <tr><td>6. Result display</td><td>Prediction and explanation appear clearly.</td><td>Sana + Maseera</td></tr>
+      <tr><td>7. Persistence</td><td>Scan is stored for the correct user.</td><td>Rayyan</td></tr>
+      <tr><td>8. History</td><td>User sees their own previous scans.</td><td>Rayyan + Frontend</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="deliverables">
+  <h2>11. Final Deliverables</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>ML Deliverables — Sana</h3>
+      <ul class="checklist">
+        <li>Dataset source and analysis</li>
+        <li>Preprocessing pipeline</li>
+        <li>Feature specification</li>
+        <li>Model comparison</li>
+        <li>Evaluation metrics/confusion matrix</li>
+        <li>Final model</li>
+        <li>Model loading/prediction documentation</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>API Deliverables — Fizza</h3>
+      <ul class="checklist">
+        <li>Flask server</li>
+        <li>Health endpoint</li>
+        <li>Scan endpoint</li>
+        <li>Validation/error handling</li>
+        <li>API documentation</li>
+        <li>Integration tests</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Feature/UI Deliverables — Maseera</h3>
+      <ul class="checklist">
+        <li>Live feature extractor</li>
+        <li>HTML parser</li>
+        <li>DNS/SSL checks</li>
+        <li>Feature output samples</li>
+        <li>Scan page</li>
+        <li>History/admin pages assigned to her</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Database Deliverables — Rayyan</h3>
+      <ul class="checklist">
+        <li>Supabase/PostgreSQL schema</li>
+        <li>Authentication</li>
+        <li>Access-control policies</li>
+        <li>Scan history</li>
+        <li>Database documentation</li>
+        <li>Feature-validation refinements</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Shared Final Deliverables</h3>
+    <ul class="two-col checklist">
+      <li>System architecture diagram</li>
+      <li>Data-flow diagram</li>
+      <li>ER/database diagram</li>
+      <li>Feature specification</li>
+      <li>API documentation</li>
+      <li>Test cases and results</li>
+      <li>Known limitations</li>
+      <li>Installation/setup guide</li>
+      <li>Environment-variable documentation</li>
+      <li>Demo-ready application</li>
+      <li>Project report</li>
+      <li>Presentation/viva preparation</li>
+    </ul>
+  </div>
+</section>
+
+<section id="viva">
+  <h2>12. Viva / Faculty Questions — Everyone Must Know These</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Project-level questions</h3>
+      <ul>
+        <li>What is phishing?</li>
+        <li>Why is phishing detection difficult?</li>
+        <li>Why use machine learning?</li>
+        <li>What is a feature?</li>
+        <li>What is the difference between training and prediction?</li>
+        <li>Why do we need live feature extraction?</li>
+        <li>Why can HTTPS not be treated as proof of legitimacy?</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Architecture questions</h3>
+      <ul>
+        <li>Why Next.js?</li>
+        <li>Why Flask?</li>
+        <li>Why Supabase/PostgreSQL?</li>
+        <li>How does Next.js communicate with Flask?</li>
+        <li>How does Flask communicate with the ML model?</li>
+        <li>Where is the model stored?</li>
+        <li>Where is scan history stored?</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>ML questions</h3>
+      <ul>
+        <li>Why Logistic Regression, SVM and Random Forest?</li>
+        <li>How did you choose the final model?</li>
+        <li>What are precision, recall and F1-score?</li>
+        <li>Why is recall important for phishing detection?</li>
+        <li>What is overfitting?</li>
+        <li>What is data leakage?</li>
+        <li>Why save the trained model instead of retraining on every request?</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Individual questions</h3>
+      <ul>
+        <li>What exactly was your primary contribution?</li>
+        <li>What was your secondary contribution?</li>
+        <li>What did another member's component contribute to yours?</li>
+        <li>What was the hardest integration issue?</li>
+        <li>How did you test your component?</li>
+        <li>What limitation remains in your implementation?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout purple">
+    <strong>Important:</strong> Every member should be able to explain the complete high-level pipeline,
+    but should know their own primary area in technical depth. Do not memorize only the table. Be able to
+    trace one URL from the frontend all the way to prediction and storage.
+  </div>
+</section>
+
+<section>
+  <h2>13. Definition of Done</h2>
+  <p>A task is not "done" merely because code exists. It is done when it is implemented, tested, documented and integrated.</p>
+  <div class="card">
+    <ul class="checklist">
+      <li>Code works locally.</li>
+      <li>Inputs and errors are handled.</li>
+      <li>Relevant tests pass.</li>
+      <li>Another member can run/use the module from the documentation.</li>
+      <li>Inputs/outputs match the shared contract.</li>
+      <li>No secrets are committed.</li>
+      <li>Changes are committed and pushed to the correct branch.</li>
+      <li>Integration with dependent modules has been verified.</li>
+      <li>Known limitations are documented.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>14. Critical Rules to Remember</h2>
+  <div class="grid">
+    <div class="callout danger"><strong>1. Feature consistency:</strong> Training-time and live-time features must match exactly.</div>
+    <div class="callout danger"><strong>2. Security:</strong> Never blindly fetch arbitrary user-supplied URLs from a server.</div>
+    <div class="callout warn"><strong>3. ML claims:</strong> A probability/score is not a guarantee that a website is malicious or safe.</div>
+    <div class="callout warn"><strong>4. HTTPS:</strong> HTTPS is useful information, not proof that a website is legitimate.</div>
+    <div class="callout info"><strong>5. Integration:</strong> Freeze API, feature and database contracts before parallel development.</div>
+    <div class="callout info"><strong>6. Reproducibility:</strong> Save preprocessing and model versions together and document how to load them.</div>
+    <div class="callout success"><strong>7. Ownership:</strong> Primary owner leads implementation; secondary owner must understand enough to collaborate and troubleshoot.</div>
+    <div class="callout success"><strong>8. Demo:</strong> Always test the entire URL → features → model → UI → database path before presenting.</div>
+  </div>
+</section>
+
+<section>
+  <h2>15. Quick Reference — Who Do I Ask?</h2>
+  <table>
+    <thead><tr><th>If the problem is...</th><th>First owner</th><th>Collaborators</th></tr></thead>
+    <tbody>
+      <tr><td>Dataset/model accuracy/training</td><td>Sana</td><td>Fizza</td></tr>
+      <tr><td>API endpoint/Next.js ↔ Python communication</td><td>Fizza</td><td>Sana, Maseera</td></tr>
+      <tr><td>Website scraping/HTML/DNS/SSL/features</td><td>Maseera</td><td>Rayyan, Sana</td></tr>
+      <tr><td>Database/auth/history</td><td>Rayyan</td><td>Maseera, Fizza</td></tr>
+      <tr><td>Result UI/explainability</td><td>Sana</td><td>Maseera</td></tr>
+      <tr><td>Full end-to-end integration</td><td>All members</td><td>All members</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>16. Final Mental Model</h2>
+  <div class="card">
+    <div class="flow">
+      <div class="step">Maseera<br><span class="small">Finds website signals</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Sana<br><span class="small">Learns from signals</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Fizza<br><span class="small">Connects the services</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Sana + Maseera<br><span class="small">Shows understandable result</span></div>
+      <div class="arrow">→</div>
+      <div class="step">Rayyan<br><span class="small">Stores user/scan data</span></div>
+    </div>
+    <p class="highlight">
+      In one sentence: Maseera turns a website into measurable evidence, Sana turns that evidence into a
+      trained prediction, Fizza makes the components communicate, and Rayyan manages the persistent user/data
+      layer — while the secondary roles ensure everyone understands how the pieces fit together.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p><strong>PhisSafe — Phishing Website Detection</strong></p>
+    <p>Team execution and responsibility guide • Prepared for circulation among project members and faculty</p>
+    <p class="small" style="color:#b8c5da">This document is a project execution guide. Exact dates, dataset choice, final feature list, API field names and database schema must be frozen by the team before implementation and then reflected in the project repository documentation.</p>
+  </div>
+</footer>
+
+</body>
+</html>

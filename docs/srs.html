@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software Requirements Specification - Phishing Website Detection System</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --heading: #102a43;
+      --accent: #1f5fa8;
+      --accent-soft: #eaf2fb;
+      --border: #d9e2ec;
+      --success: #216e39;
+      --warning: #8a5a00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .page {
+      max-width: 1050px;
+      margin: 32px auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 10px 28px rgba(16, 42, 67, 0.08);
+      overflow: hidden;
+    }
+
+    .cover {
+      padding: 70px 72px;
+      background: linear-gradient(135deg, #102a43, #1f5fa8);
+      color: white;
+    }
+
+    .cover .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+
+    .cover h1 {
+      margin: 0 0 14px;
+      font-size: 42px;
+      line-height: 1.2;
+    }
+
+    .cover h2 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 22px;
+      opacity: 0.9;
+    }
+
+    .cover .meta {
+      margin-top: 42px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 28px;
+      font-size: 15px;
+    }
+
+    main {
+      padding: 52px 72px 72px;
+    }
+
+    h2 {
+      color: var(--heading);
+      margin-top: 44px;
+      margin-bottom: 14px;
+      font-size: 28px;
+      border-bottom: 2px solid var(--accent-soft);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      color: var(--accent);
+      margin-top: 28px;
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+
+    h4 {
+      color: var(--heading);
+      margin-top: 22px;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 10px 0 14px;
+    }
+
+    ul, ol {
+      margin: 8px 0 18px 24px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    .note, .decision {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 14px 16px;
+      margin: 18px 0;
+      border-radius: 6px;
+    }
+
+    .decision strong {
+      color: var(--heading);
+    }
+
+    .flow {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      margin: 18px 0;
+      font-family: "Courier New", monospace;
+      white-space: pre-wrap;
+      color: #243b53;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 14.5px;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 11px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: var(--heading);
+    }
+
+    .status-open {
+      color: var(--warning);
+      font-weight: bold;
+    }
+
+    .status-confirmed {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    .toc {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .toc a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .toc li {
+      margin: 5px 0;
+    }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .page {
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        max-width: none;
+      }
+
+      .cover {
+        min-height: 90vh;
+        page-break-after: always;
+      }
+
+      h2 {
+        page-break-after: avoid;
+      }
+
+      table, .flow, .note, .decision {
+        page-break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .cover, main {
+        padding: 36px 24px;
+      }
+
+      .cover h1 {
+        font-size: 32px;
+      }
+
+      .cover .meta {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="cover">
+      <div class="eyebrow">Software Requirements Specification</div>
+      <h1>Phishing Website Detection System</h1>
+      <h2>Machine Learning-Based Phased Hybrid Detection Platform</h2>
+
+      <div class="meta">
+        <div><strong>Document Type:</strong> High-Level SRS</div>
+        <div><strong>Version:</strong> 1.0</div>
+        <div><strong>Status:</strong> Draft for Review</div>
+        <div><strong>Prepared For:</strong> Final-Year Group Project</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="toc">
+        <h3 style="margin-top:0;">Table of Contents</h3>
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#overall-description">Overall Description</a></li>
+          <li><a href="#system-flow">Overall System Flow</a></li>
+          <li><a href="#users">User Roles</a></li>
+          <li><a href="#functional-requirements">Functional Requirements</a></li>
+          <li><a href="#ml-requirements">Machine Learning Requirements</a></li>
+          <li><a href="#reporting">Reporting and Community Review</a></li>
+          <li><a href="#verified-list">Verified Phishing List</a></li>
+          <li><a href="#non-functional">Non-Functional Requirements</a></li>
+          <li><a href="#technology">Provisional Technology Stack</a></li>
+          <li><a href="#data">High-Level Data Requirements</a></li>
+          <li><a href="#assumptions">Assumptions and Constraints</a></li>
+          <li><a href="#open-items">Open Decisions</a></li>
+          <li><a href="#acceptance">High-Level Acceptance Criteria</a></li>
+          <li><a href="#development-strategy">Development Strategy and Flowchart</a></li>
+        </ol>
+      </section>
+
+      <section id="introduction">
+        <h2>1. Introduction</h2>
+
+        <h3>1.1 Purpose</h3>
+        <p>
+          This document defines the high-level software requirements for a Phishing Website Detection System.
+          The system will allow authenticated users to submit website links and receive an automated prediction
+          indicating whether a website is legitimate or potentially phishing.
+        </p>
+
+        <p>
+          The solution will combine machine learning classification with phased analysis of the submitted URL,
+          available domain and SSL information, and safely retrieved HTML content.
+        </p>
+
+        <h3>1.2 Project Objective</h3>
+        <p>
+          The objective is to create a practical web-based platform that helps users assess website risk before
+          entering personal, financial, or account information. The system will also support user reporting,
+          community voting, administrator review, and maintenance of an internal Verified Phishing List.
+        </p>
+
+        <h3>1.3 Scope</h3>
+        <p>The initial version will include:</p>
+        <ul>
+          <li>Authenticated access for registered users.</li>
+          <li>Single-URL website scanning.</li>
+          <li>Phased hybrid website analysis.</li>
+          <li>Binary machine learning classification.</li>
+          <li>Low, medium, and high risk-level display.</li>
+          <li>Explainable scan results.</li>
+          <li>Personal scan history.</li>
+          <li>Structured reporting and community voting.</li>
+          <li>Administrator review of eligible reports.</li>
+          <li>An internal Verified Phishing List.</li>
+        </ul>
+
+        <div class="decision">
+          <strong>Confirmed scope decision:</strong> Guest access is excluded from the initial version.
+          Users must register and log in before scanning a website.
+        </div>
+      </section>
+
+      <section id="overall-description">
+        <h2>2. Overall Description</h2>
+
+        <h3>2.1 Product Perspective</h3>
+        <p>
+          The system will be a web application with a Next.js (App Router) frontend, a Flask-based backend API,
+          a machine learning classification model, and a provisional Supabase PostgreSQL database.
+        </p>
+
+        <h3>2.2 Detection Approach</h3>
+        <p>
+          The system will use a phased hybrid detection approach. It will not fully execute or interact with
+          webpage JavaScript. Instead, it will perform controlled analysis in stages.
+        </p>
+
+        <ol>
+          <li><strong>URL analysis:</strong> Examine the structure and characteristics of the submitted link.</li>
+          <li><strong>Domain and SSL analysis:</strong> Evaluate available domain, DNS, and certificate information.</li>
+          <li><strong>Controlled HTML analysis:</strong> Retrieve and inspect limited webpage content, including forms, links, and HTML indicators.</li>
+        </ol>
+
+        <p>The system will not automatically download files or perform full browser-behaviour analysis.</p>
+
+        <h3>2.3 Classification Output</h3>
+        <p>The deployed model will use binary classification:</p>
+        <ul>
+          <li>Legitimate</li>
+          <li>Phishing</li>
+        </ul>
+
+        <p>The application will additionally display:</p>
+        <ul>
+          <li>Phishing probability</li>
+          <li>Low, medium, or high risk level</li>
+          <li>Main warning indicators</li>
+          <li>Completed or failed analysis stages</li>
+          <li>Recommended user action</li>
+        </ul>
+      </section>
+
+      <section id="system-flow">
+        <h2>3. Overall System Flow</h2>
+
+        <div class="flow">User registers or logs in
+        ↓
+User enters one website URL
+        ↓
+System validates the URL
+        ↓
+System checks the internal Verified Phishing List
+        ↓
+System performs phased analysis:
+• URL analysis
+• Domain and SSL analysis
+• Controlled HTML analysis
+        ↓
+Extracted features are passed to the deployed ML model
+        ↓
+Model predicts Legitimate or Phishing
+        ↓
+System calculates phishing probability and risk level
+        ↓
+Verified-list result and ML result are combined
+        ↓
+User receives an explainable result
+        ↓
+Complete scan result is stored in the user’s history
+        ↓
+User may report the result or vote on an existing report
+        ↓
+Eligible reports move to administrator review
+        ↓
+Administrator may add the exact URL to the Verified Phishing List</div>
+
+        <h3>3.1 Scan Processing</h3>
+        <p>
+          Scanning will be synchronous in the initial version. The backend will process the request directly
+          and return a result after completing the required analysis stages.
+        </p>
+
+        <p>
+          Reasonable limits will be applied to prevent excessively long or unsafe requests. Detailed technical
+          rules will be defined later.
+        </p>
+
+        <h3>3.2 Incomplete Analysis</h3>
+        <p>
+          The handling of missing or unavailable features remains open. The current preference is to avoid
+          providing a prediction when required analysis cannot be completed reliably.
+        </p>
+      </section>
+
+      <section id="users">
+        <h2>4. User Roles</h2>
+
+        <h3>4.1 Registered User</h3>
+        <p>A registered user will be able to:</p>
+        <ul>
+          <li>Create an account using email and password.</li>
+          <li>Verify the registered email address.</li>
+          <li>Log in and log out.</li>
+          <li>Reset a forgotten password.</li>
+          <li>Submit one URL at a time for analysis.</li>
+          <li>View explainable scan results.</li>
+          <li>View personal scan history.</li>
+          <li>Submit structured reports.</li>
+          <li>Vote on reported websites.</li>
+          <li>Track the status of submitted reports.</li>
+        </ul>
+
+        <h3>4.2 Administrator</h3>
+        <p>At a high level, an administrator will be able to:</p>
+        <ul>
+          <li>Access a protected administrator area.</li>
+          <li>Review reports eligible for administrative review.</li>
+          <li>Review community voting information.</li>
+          <li>Mark reports as verified, rejected, or inconclusive.</li>
+          <li>Add confirmed exact URLs to the Verified Phishing List.</li>
+          <li>View relevant system and scan information.</li>
+        </ul>
+
+        <p class="status-open">Detailed administrator permissions are still to be decided.</p>
+      </section>
+
+      <section id="functional-requirements">
+        <h2>5. Functional Requirements</h2>
+
+        <h3>5.1 Authentication</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FR-01</td><td>The system shall allow users to register using email and password.</td></tr>
+            <tr><td>FR-02</td><td>The system shall support email verification.</td></tr>
+            <tr><td>FR-03</td><td>The system shall allow verified users to log in and log out.</td></tr>
+            <tr><td>FR-04</td><td>The system shall support forgot-password and password-reset functionality.</td></tr>
+            <tr><td>FR-05</td><td>The system shall protect user and administrator routes from unauthenticated access.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>5.2 Website Scanning</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FR-06</td><td>The system shall allow an authenticated user to submit one website URL at a time.</td></tr>
+            <tr><td>FR-07</td><td>The system shall validate the submitted URL before analysis.</td></tr>
+            <tr><td>FR-08</td><td>The system shall check the submitted URL against the internal Verified Phishing List.</td></tr>
+            <tr><td>FR-09</td><td>The system shall perform URL analysis.</td></tr>
+            <tr><td>FR-10</td><td>The system shall perform available domain and SSL analysis.</td></tr>
+            <tr><td>FR-11</td><td>The system shall perform controlled HTML analysis without executing webpage JavaScript.</td></tr>
+            <tr><td>FR-12</td><td>The system shall pass the required extracted features to the deployed classification model.</td></tr>
+            <tr><td>FR-13</td><td>The system shall return a Legitimate or Phishing prediction.</td></tr>
+            <tr><td>FR-14</td><td>The system shall display phishing probability and a low, medium, or high risk level.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>5.3 Explainable Results</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FR-15</td><td>The system shall display key warning indicators that influenced the result.</td></tr>
+            <tr><td>FR-16</td><td>The system shall show which analysis stages were completed or failed.</td></tr>
+            <tr><td>FR-17</td><td>The system shall display a recommended user action.</td></tr>
+            <tr><td>FR-18</td><td>The system shall display a disclaimer stating that the result is automated and not definitive proof.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>5.4 Scan History</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Requirement</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>FR-19</td><td>The system shall store complete scan results for authenticated users.</td></tr>
+            <tr><td>FR-20</td><td>The system shall allow users to view their personal scan history.</td></tr>
+            <tr><td>FR-21</td><td>Stored scan results shall include the prediction, probability, risk level, warning indicators, analysis-stage status, model version, and timestamp.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="ml-requirements">
+        <h2>6. Machine Learning Requirements</h2>
+
+        <h3>6.1 Model Development</h3>
+        <p>The machine learning workflow will include:</p>
+        <ol>
+          <li>Selection of a suitable phishing website dataset.</li>
+          <li>Data cleaning and preparation.</li>
+          <li>Selection of features that can also be extracted from newly submitted websites.</li>
+          <li>Training of multiple classification algorithms.</li>
+          <li>Comparison of model performance.</li>
+          <li>Selection and deployment of the best-performing model.</li>
+        </ol>
+
+        <h3>6.2 Model Comparison</h3>
+        <p>
+          Multiple classifiers will be evaluated. The exact algorithms will be finalised later.
+          Likely options include Logistic Regression, Decision Tree, Random Forest, Support Vector Machine,
+          and optionally XGBoost.
+        </p>
+
+        <h3>6.3 Evaluation Metrics</h3>
+        <p>The project will consider:</p>
+        <ul>
+          <li>Accuracy</li>
+          <li>Precision</li>
+          <li>Recall</li>
+          <li>F1-score</li>
+          <li>False-negative rate</li>
+          <li>Prediction time</li>
+        </ul>
+
+        <p>
+          The final model will not be selected using accuracy alone. Phishing recall and false-negative rate
+          will receive particular attention.
+        </p>
+
+        <h3>6.4 Feature Consistency</h3>
+        <p>
+          The deployed model shall use only features that can be extracted safely and consistently from
+          newly submitted URLs. The final dataset and feature list remain to be decided after research.
+        </p>
+      </section>
+
+      <section id="reporting">
+        <h2>7. Reporting and Community Review</h2>
+
+        <h3>7.1 Structured Reports</h3>
+        <p>Registered users may submit a report for reasons such as:</p>
+        <ul>
+          <li>Incorrect prediction</li>
+          <li>Known phishing website</li>
+          <li>Known legitimate website</li>
+          <li>Website behaviour has changed</li>
+          <li>Other concern</li>
+        </ul>
+
+        <h3>7.2 Community Voting</h3>
+        <p>Registered users may vote on reported websites using options such as:</p>
+        <ul>
+          <li>Likely Phishing</li>
+          <li>Likely Legitimate</li>
+        </ul>
+
+        <p>
+          Community voting will support administrative review but will not independently determine the final status.
+        </p>
+
+        <h3>7.3 Escalation to Administrator</h3>
+        <p>
+          Reports will generally become eligible for administrator review after reaching a configurable voting threshold.
+          The provisional threshold is 20 valid votes.
+        </p>
+
+        <p>
+          High-risk or urgent reports may be escalated earlier. The exact escalation rules will be finalised later.
+        </p>
+
+        <h3>7.4 Report Statuses</h3>
+        <div class="flow">Pending Community Review
+        ↓
+Eligible for Admin Review
+        ↓
+Under Admin Review
+        ↓
+Verified / Rejected / Inconclusive</div>
+      </section>
+
+      <section id="verified-list">
+        <h2>8. Verified Phishing List</h2>
+
+        <p>
+          The system will maintain an internal list of exact URLs that have been verified as phishing by an administrator.
+        </p>
+
+        <h3>8.1 Matching Rule</h3>
+        <p>
+          The initial version will use exact URL matching only. Domain-wide and subdomain-wide matching are excluded for now.
+        </p>
+
+        <h3>8.2 Combined Result Logic</h3>
+        <p>
+          The system will check the Verified Phishing List and still run the machine learning analysis.
+          A verified phishing status will override a conflicting model prediction.
+        </p>
+
+        <div class="flow">Submitted URL
+      ↓
+Check Verified Phishing List
+      +
+Run ML Analysis
+      ↓
+Combine Results
+      ↓
+Display Final Status</div>
+
+        <p>
+          No external threat-list API will be used in the initial version.
+        </p>
+      </section>
+
+      <section id="non-functional">
+        <h2>9. Non-Functional Requirements</h2>
+
+        <h3>9.1 Usability</h3>
+        <ul>
+          <li>The interface shall be clear and understandable to non-technical users.</li>
+          <li>Results shall use simple labels and actionable guidance.</li>
+          <li>The application shall provide clear error and validation messages.</li>
+        </ul>
+
+        <h3>9.2 Performance</h3>
+        <ul>
+          <li>The system shall process one URL per scan request.</li>
+          <li>The system shall use reasonable request limits and timeouts.</li>
+          <li>The system shall avoid unnecessary full-page execution or file downloads.</li>
+        </ul>
+
+        <h3>9.3 Security</h3>
+        <ul>
+          <li>The system shall require authentication for all scans.</li>
+          <li>The system shall protect administrator functionality.</li>
+          <li>The backend shall validate submitted URLs.</li>
+          <li>The system shall not execute webpage JavaScript during controlled HTML analysis.</li>
+          <li>The system shall not automatically download files from submitted websites.</li>
+          <li>Detailed security implementation controls will be defined in a later design phase.</li>
+        </ul>
+
+        <h3>9.4 Reliability</h3>
+        <ul>
+          <li>The system shall record analysis-stage status.</li>
+          <li>The system shall not present a result as guaranteed proof.</li>
+          <li>The system shall handle unreachable or invalid websites gracefully.</li>
+        </ul>
+
+        <h3>9.5 Maintainability</h3>
+        <ul>
+          <li>The frontend, backend, machine learning, and data layers should remain modular.</li>
+          <li>The deployed model should be replaceable without redesigning the full application.</li>
+          <li>Model versions should be recorded with scan results.</li>
+        </ul>
+      </section>
+
+      <section id="technology">
+        <h2>10. Provisional Technology Stack</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Technology</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Frontend</td>
+              <td>Next.js (App Router)</td>
+              <td class="status-confirmed">Confirmed</td>
+            </tr>
+            <tr>
+              <td>Backend/API</td>
+              <td>Flask</td>
+              <td class="status-confirmed">Confirmed for now</td>
+            </tr>
+            <tr>
+              <td>Machine Learning</td>
+              <td>Python and scikit-learn</td>
+              <td class="status-confirmed">Confirmed for now</td>
+            </tr>
+            <tr>
+              <td>Database</td>
+              <td>Supabase PostgreSQL</td>
+              <td class="status-open">Provisional; open to change</td>
+            </tr>
+            <tr>
+              <td>Authentication</td>
+              <td>Supabase Auth</td>
+              <td class="status-open">Provisional; open to change</td>
+            </tr>
+            <tr>
+              <td>HTML Analysis</td>
+              <td>Python-based parser such as BeautifulSoup</td>
+              <td class="status-open">Provisional</td>
+            </tr>
+            <tr>
+              <td>Model Persistence</td>
+              <td>Joblib or suitable alternative</td>
+              <td class="status-open">To be finalised</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="data">
+        <h2>11. High-Level Data Requirements</h2>
+
+        <p>The system is expected to store data related to:</p>
+        <ul>
+          <li>User accounts and profiles</li>
+          <li>Website scan records</li>
+          <li>Scan results and warning indicators</li>
+          <li>Model version used for each prediction</li>
+          <li>User reports</li>
+          <li>Community votes</li>
+          <li>Verified phishing URLs</li>
+          <li>Administrator review outcomes</li>
+        </ul>
+
+        <p>
+          The detailed database schema, URL-redaction policy, and storage of sensitive query parameters
+          will be decided in the next design phase.
+        </p>
+      </section>
+
+      <section id="assumptions">
+        <h2>12. Assumptions and Constraints</h2>
+
+        <ul>
+          <li>Users will require internet access to use the web application.</li>
+          <li>The initial system will scan one URL at a time.</li>
+          <li>The model will be trained before deployment and will not retrain for every scan.</li>
+          <li>Model training will occur offline during the initial version.</li>
+          <li>No external threat-intelligence API will be used initially.</li>
+          <li>The system will not function as a complete malware sandbox.</li>
+          <li>Some domain, SSL, or HTML information may be unavailable for certain websites.</li>
+          <li>The result will be advisory and not legally or technically definitive.</li>
+        </ul>
+      </section>
+
+      <section id="open-items">
+        <h2>13. Open Decisions</h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Dataset selection</td><td class="status-open">To be researched</td></tr>
+            <tr><td>Final feature list</td><td class="status-open">To be decided after dataset research</td></tr>
+            <tr><td>Exact classification algorithms</td><td class="status-open">To be finalised</td></tr>
+            <tr><td>Model selection thresholds</td><td class="status-open">To be finalised</td></tr>
+            <tr><td>Risk-level probability thresholds</td><td class="status-open">To be finalised</td></tr>
+            <tr><td>Missing-feature handling</td><td class="status-open">Leaning toward no prediction</td></tr>
+            <tr><td>Detailed administrator permissions</td><td class="status-open">To be decided</td></tr>
+            <tr><td>Final database platform</td><td class="status-open">Supabase for now; open to change</td></tr>
+            <tr><td>Detailed database schema</td><td class="status-open">To be designed</td></tr>
+            <tr><td>URL storage and redaction rules</td><td class="status-open">To be decided</td></tr>
+            <tr><td>Voting and escalation thresholds</td><td class="status-open">Provisional</td></tr>
+            <tr><td>Detailed security controls</td><td class="status-open">To be designed</td></tr>
+            <tr><td>Deployment and hosting</td><td class="status-open">To be decided</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="acceptance">
+        <h2>14. High-Level Acceptance Criteria</h2>
+
+        <p>The initial system will be considered functionally acceptable when:</p>
+        <ol>
+          <li>A user can register, verify an email address, log in, and reset a password.</li>
+          <li>An authenticated user can submit one valid website URL.</li>
+          <li>The system can perform the agreed phased analysis.</li>
+          <li>The deployed model can classify the submitted website as Legitimate or Phishing.</li>
+          <li>The user receives a probability, risk level, warning indicators, and safety guidance.</li>
+          <li>The complete result is stored in the user’s scan history.</li>
+          <li>The user can submit a report and participate in community voting.</li>
+          <li>An eligible report can be reviewed by an administrator.</li>
+          <li>An administrator can add an exact verified phishing URL to the internal list.</li>
+          <li>The system checks both the Verified Phishing List and the ML model for future scans.</li>
+        </ol>
+      </section>
+
+      <section id="development-strategy">
+        <h2>15. Development Strategy and Flowchart</h2>
+        
+        <h3>15.1 Work Distribution & Rotation (Sana, Fizza, Maseera, Rayyan)</h3>
+        <p>
+          To ensure that every group member gains well-rounded experience across the entire technical stack (Frontend, Backend, and Machine Learning) and can satisfy grading criteria, work is divided into overlapping primary and secondary roles.
+        </p>
+
+        <table style="margin-top: 10px;">
+          <thead>
+            <tr>
+              <th>Group Member</th>
+              <th>Primary Focus (Owner)</th>
+              <th>Secondary Focus (Collaborator)</th>
+              <th>Technologies Handled</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sana</strong></td>
+              <td>
+                <strong>ML Model Engineering</strong><br/>
+                Dataset research, model comparison scripts (SVM, RF, Logistic Regression), model optimization, and exporting static model files.
+              </td>
+              <td>
+                <strong>Next.js UI & Explainability</strong><br/>
+                Integrating model outputs (probabilities, flags) on the client dashboard.
+              </td>
+              <td>Python, Scikit-learn, Next.js</td>
+            </tr>
+            <tr>
+              <td><strong>Fizza</strong></td>
+              <td>
+                <strong>API Server & Integration</strong><br/>
+                Building Flask endpoints, setting up data pipelines between the Next.js app and Python services.
+              </td>
+              <td>
+                <strong>ML Pipeline Evaluation</strong><br/>
+                Collaborating on testing and verifying different models in the python runtime.
+              </td>
+              <td>Python (Flask), JavaScript, CSS</td>
+            </tr>
+            <tr>
+              <td><strong>Maseera</strong></td>
+              <td>
+                <strong>Live Feature Extraction</strong><br/>
+                Writing scraper logic and HTML analysis scripts (BeautifulSoup), DNS/SSL validation code.
+              </td>
+              <td>
+                <strong>Frontend Page Development</strong><br/>
+                Creating UI layout pages for scanning URLs, user histories, and admin panels.
+              </td>
+              <td>Python (BeautifulSoup), Next.js, Tailwind CSS</td>
+            </tr>
+            <tr>
+              <td><strong>Rayyan</strong></td>
+              <td>
+                <strong>Database & Auth Systems</strong><br/>
+                Configuring Supabase tables, relational database logic (user scan histories, reports, verified list overrides).
+              </td>
+              <td>
+                <strong>Feature Extractor Refinement</strong><br/>
+                Helping extract domain-level indicators and validating query safety rules.
+              </td>
+              <td>PostgreSQL (Supabase), SQL, Next.js</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>15.2 Phased Development Flowchart</h3>
+        <p>Below is the step-by-step order of execution showing how the tasks progress from initial setups to integration and final validation.</p>
+
+        <!-- FLOWCHART -->
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0;">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; font-family: sans-serif;">
+            
+            <!-- Phase 1 -->
+            <div style="text-align: center; font-weight: bold; color: var(--heading); text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">Phase 1: Setup & Foundations (Parallel)</div>
+            <div style="display: flex; justify-content: space-between; gap: 20px; width: 100%; max-width: 650px;">
+              <div style="border: 2px solid #102a43; background: #f0f4f8; padding: 12px; border-radius: 8px; flex: 1; text-align: center; font-size: 14px;">
+                <strong>ML & Backend Team</strong><br/>
+                Dataset research & training offline classifiers (SVM, RF)
+              </div>
+              <div style="border: 2px solid #1f5fa8; background: #eaf2fb; padding: 12px; border-radius: 8px; flex: 1; text-align: center; font-size: 14px;">
+                <strong>Frontend & DB Team</strong><br/>
+                Setting up Next.js app structure & Supabase tables
+              </div>
+            </div>
+            
+            <div style="color: var(--muted); font-size: 20px;">↓</div>
+            
+            <!-- Phase 2 -->
+            <div style="text-align: center; font-weight: bold; color: var(--heading); text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">Phase 2: Core Components Development</div>
+            <div style="display: flex; justify-content: space-between; gap: 20px; width: 100%; max-width: 650px;">
+              <div style="border: 2px solid #102a43; background: #f0f4f8; padding: 12px; border-radius: 8px; flex: 1; text-align: center; font-size: 14px;">
+                <strong>ML & Backend Team</strong><br/>
+                Write feature extraction script & wrap ML model in Flask API
+              </div>
+              <div style="border: 2px solid #1f5fa8; background: #eaf2fb; padding: 12px; border-radius: 8px; flex: 1; text-align: center; font-size: 14px;">
+                <strong>Frontend & DB Team</strong><br/>
+                Develop Login/Dashboard UIs & integrate Supabase Auth
+              </div>
+            </div>
+            
+            <div style="color: var(--muted); font-size: 20px;">↓</div>
+            
+            <!-- Phase 3 -->
+            <div style="text-align: center; font-weight: bold; color: var(--heading); text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">Phase 3: Integration (Joint effort)</div>
+            <div style="border: 2px dashed var(--accent); background: #fff; padding: 14px 20px; border-radius: 8px; width: 100%; max-width: 650px; text-align: center; font-size: 14px;">
+              <strong>All Members Collaborating</strong><br/>
+              Hook Next.js scan forms to the Flask API endpoint.<br/>
+              Submit live URLs -> Extract features on Flask -> Run ML -> Return probability to Next.js.
+            </div>
+            
+            <div style="color: var(--muted); font-size: 20px;">↓</div>
+            
+            <!-- Phase 4 -->
+            <div style="text-align: center; font-weight: bold; color: var(--heading); text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">Phase 4: Database Logic & Features</div>
+            <div style="border: 2px solid #1f5fa8; background: #eaf2fb; padding: 12px; border-radius: 8px; width: 100%; max-width: 650px; text-align: center; font-size: 14px;">
+              <strong>Full Stack Devs (Members 2 & 4)</strong><br/>
+              Log scan histories to Supabase. Implement community reporting and Admin Verified lists.
+            </div>
+            
+            <div style="color: var(--muted); font-size: 20px;">↓</div>
+            
+            <!-- Phase 5 -->
+            <div style="text-align: center; font-weight: bold; color: var(--heading); text-transform: uppercase; font-size: 13px; letter-spacing: 0.05em;">Phase 5: Testing, Refinement & Delivery</div>
+            <div style="border: 2px solid #216e39; background: #e6f4ea; padding: 12px; border-radius: 8px; width: 100%; max-width: 650px; text-align: center; font-size: 14px; color: #137333; font-weight: bold;">
+              Continuous testing of models, security analysis validation, and system sign-off.
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <div class="footer">
+        This high-level SRS is intended for scope approval. Detailed technical design, database design,
+        security rules, dataset selection, and model implementation decisions will be documented after approval.
+      </div>
+    </main>
+  </div>
+</body>
+</html>
