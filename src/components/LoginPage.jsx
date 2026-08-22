@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
+import Link from "next/link";
 
 import { FaLock } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
@@ -138,7 +139,7 @@ export default function LoginPage() {
 
 
           <p className='text-center mt-6 text-neutral-500'>Don't have an account?
-            <a href='' className='text-blue-500'>Create an acoount</a>
+            <a href='/register' className='text-blue-500'>Create an acoount</a>
           </p>
 
           {error && (

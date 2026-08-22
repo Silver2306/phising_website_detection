@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
+import Link from "next/link";
 
 export default function Dashboard({ user }) {
   const router = useRouter();
