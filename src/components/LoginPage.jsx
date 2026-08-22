@@ -1,5 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "../lib/supabase/client";
+
 import { FaLock } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineMailOutline } from 'react-icons/md';
@@ -19,18 +23,59 @@ function IconButton({ children, text, iconColor }) {
   )
 }
 
-function IconInput({ children, placeholder, type }) {
+function IconInput({children,placeholder,type,value,onChange,autoComplete,  }) {
   return (
-    <div className='flex justify-left items-center w-full relative h-12 border mt-3 rounded'>
-      <div className='icon-wrapper w-14 absolute flex justify-center items-center shadow-2xl'>
-        <span className='text-xl opacity-80 text-gray-500'>{children}</span>
+    <div className="flex justify-left items-center w-full relative h-12 border mt-3 rounded">
+      <div className="icon-wrapper w-14 absolute flex justify-center items-center">
+        <span className="text-xl opacity-80 text-gray-500">
+          {children}
+        </span>
       </div>
-      <input type={type} placeholder={placeholder} className='w-full h-full pl-14' />
+
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        autoComplete={autoComplete}
+        required
+        className="w-full h-full pl-14 pr-4 outline-none rounded"
+      />
     </div>
-  )
+  );
 }
 
 export default function LoginPage() {
+
+  async function handleLogin(event) {
+  event.preventDefault();
+
+  setError("");
+  setLoading(true);
+
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    setError("Invalid email or password.");
+    setLoading(false);
+    return;
+  }
+
+  router.replace("/dashboard");
+  router.refresh();
+}
+
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   return <>
     <div className='flex 
@@ -69,13 +114,16 @@ export default function LoginPage() {
 
           <span className='block text-center opacity-70 mt-4 mb-10 text-gray-800'>or continue with email</span>
 
-          <IconInput placeholder="Email" type='text'>
-            <MdOutlineMailOutline />
-          </IconInput>
+          <form onSubmit={handleLogin}>
 
-          <IconInput placeholder="Password" type='password'>
-            <RiLockPasswordLine />
-          </IconInput>
+            <IconInput placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email">
+              <MdOutlineMailOutline />
+            </IconInput>
+
+            <IconInput placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}  autoComplete="current-password">
+              <RiLockPasswordLine />
+            </IconInput>
+          
 
           <div className='flex justify-between items-center mt-3'>
             <div>
@@ -93,8 +141,21 @@ export default function LoginPage() {
             <a href='' className='text-blue-500'>Create an acoount</a>
           </p>
 
-          <button className='bg-red-600 text-white w-full py-4 rounded mt-5 text-xl '>Login</button>
+          {error && (
+            <p className="text-red-600 text-sm mt-3">
+            {error}
+            </p>
+          )}
 
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white w-full py-4 rounded mt-5 text-xl">
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+        </form>
+        
         </div>
 
         {/*Rigth Side*/}
