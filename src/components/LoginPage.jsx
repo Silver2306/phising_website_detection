@@ -131,8 +131,10 @@ export default function LoginPage() {
               <input type='checkbox' />
               <span className='text-neutral-500'> Remember me</span>
             </div>
-            <div className='item'>
-              <a href='' className='text-blue-600'>Forgot Password?</a>
+            <div className='item text-blue-600'>
+              <Link href="/forgot-password">
+                Forgot Password?
+              </Link>
             </div>
           </div>
 

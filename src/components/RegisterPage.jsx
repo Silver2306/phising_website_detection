@@ -50,13 +50,15 @@ export default function RegisterPage() {
     return;
   }
 
-  if (data.user) {
-    setMessage(
-      "Account created successfully. Check your email if confirmation is required."
-    );
-  } else {
-    setError("Account was not created.");
-  }
+  if (data.user && data.session) {
+  setMessage(
+    "Account created successfully."
+  );
+} else if (data.user && !data.session) {
+  setError("Account was created, but login could not start.");
+} else {
+  setError("Account was not created.");
+}
 
   setLoading(false);
 }
