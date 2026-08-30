@@ -9,9 +9,12 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  {/*CHECKS IF USER IS LOGGED IN OR NOT*/}
   if (!user) {
     redirect("/");
   }
 
+  {/*PASSING USER*/}
   return <Dashboard user={user} />;
 }
+
