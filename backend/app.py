@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import joblib
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 
@@ -53,8 +54,15 @@ def scan():
 
     url = data["url"]
 
+    parsed_url = urlparse(url)
+
+    if parsed_url.scheme not in ["http", "https"] or not parsed_url.netloc:
+        return jsonify({
+            "error": "Invalid URL"
+        }), 400
+
     return jsonify({
-        "message": "URL received successfully",
+        "message": "Valid URL received",
         "url": url
     })
 
