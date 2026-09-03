@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhisSafe - All Application Views (Professional Edition)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* CSS Variables integrating Original Crimson Brand with Enterprise SaaS Theme */
+    :root {
+      --bg-canvas: #f8fafc; /* Slightly softer slate from original */
+      --bg-card: #ffffff;
+      --bg-header: #ffffff;
+      
+      --brand-dark: #0f172a;
+      --brand-primary: #dc2626; /* Original PhisSafe Crimson */
+      --brand-accent: #dc2626;  /* Original PhisSafe Crimson */
+      --brand-accent-hover: #b91c1c; /* Original PhisSafe Dark Crimson */
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --border-color: #e2e8f0;
+      --border-dark: #cbd5e1;
+      
+      --status-danger: #dc2626;
+      --status-danger-bg: #fef2f2;
+      --status-danger-border: #fecaca;
+      
+      --status-warn: #d97706;
+      --status-warn-bg: #fffbeb;
+      --status-warn-border: #fde68a;
+      
+      --status-success: #059669;
+      --status-success-bg: #ecfdf5;
+      --status-success-border: #a7f3d0;
+      
+      --radius-sm: 6px;
+      --radius-md: 8px; /* Restored slightly rounder corners from original */
+      --radius-lg: 12px; 
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background-color: #0f172a; 
+      color: #f8fafc; 
+      line-height: 1.5;
+    }
+
+    /* Showcase Navigation */
+    .showcase-header {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid #334155; padding: 14px 28px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand-logo { color: #fff; text-decoration: none; font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .brand-logo i { color: var(--brand-accent); }
+    .showcase-nav { display: flex; gap: 8px; overflow-x: auto; }
+    .showcase-nav a { 
+      color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 500; 
+      padding: 6px 14px; border-radius: 20px; border: 1px solid transparent; 
+      transition: all 0.2s;
+    }
+    .showcase-nav a:hover, .showcase-nav a.active { color: #fff; background: var(--brand-accent); border-color: var(--brand-accent); }
+
+    .container { max-width: 1500px; margin: 0 auto; padding: 40px 24px 80px; }
+    
+    .section-title-wrapper { margin: 60px 0 24px; padding-bottom: 12px; border-bottom: 1px solid #334155; }
+    .section-title { font-size: 22px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 12px; }
+    .section-desc { color: #94a3b8; font-size: 14px; margin-top: 4px; }
+    .badge { font-size: 11px; font-weight: 600; background: rgba(220, 38, 38, 0.2); color: #fca5a5; padding: 3px 8px; border-radius: var(--radius-sm); border: 1px solid rgba(220, 38, 38, 0.4); }
+
+    .viewport-grid { display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start; }
+    @media (max-width: 1280px) { .viewport-grid { grid-template-columns: 1fr; } }
+
+    /* Browser Desktop Frame */
+    .frame-desktop {
+      background: var(--bg-canvas); border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border: 1px solid #334155; color: var(--text-main);
+    }
+    .frame-desktop-bar { background: #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border-dark); }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #ef4444; } .dot-y { background: #f59e0b; } .dot-g { background: #10b981; }
+    .browser-address { flex: 1; background: #fff; border-radius: var(--radius-sm); padding: 4px 14px; font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; border: 1px solid var(--border-dark); }
+
+    /* Mobile Phone Frame */
+    .frame-mobile-wrapper { display: flex; flex-direction: column; align-items: center; }
+    .frame-mobile-label { font-size: 13px; font-weight: 600; color: #94a3b8; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .frame-mobile {
+      width: 375px; height: 720px; background: var(--bg-canvas); border-radius: 40px; border: 10px solid #1e293b;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); overflow-y: auto; position: relative; color: var(--text-main);
+    }
+    .frame-mobile::-webkit-scrollbar { width: 4px; } .frame-mobile::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .phone-notch { width: 140px; height: 20px; background: #1e293b; position: sticky; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; z-index: 100; margin: 0 auto; }
+    .phone-screen-content { padding: 12px 14px 24px; }
+
+    /* Shared Enterprise Components */
+    .btn-primary {
+      background-color: var(--brand-accent); color: #fff; font-weight: 600; font-size: 14px;
+      padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid transparent; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: var(--shadow-md); transition: all 0.2s; text-decoration: none;
+    }
+    .btn-primary:hover { background-color: var(--brand-accent-hover); }
+    
+    .btn-outline {
+      background-color: #fff; color: var(--text-main); font-weight: 600; font-size: 14px;
+      padding: 10px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-dark); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: var(--shadow-sm); transition: all 0.2s;
+    }
+    .btn-outline:hover { background-color: #f8fafc; border-color: #94a3b8; }
+
+    .input-group { position: relative; margin-bottom: 16px; }
+    .input-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 6px; }
+    .input-field {
+      width: 100%; height: 44px; padding: 8px 14px; border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md); font-size: 14px; color: var(--text-main);
+      background: #fff; outline: none; transition: border-color 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .input-field:focus { border-color: var(--brand-accent); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15); }
+    
+    .input-icon { position: absolute; left: 14px; bottom: 15px; color: var(--text-muted); font-size: 14px; }
+    .input-field.has-icon { padding-left: 40px; }
+
+    .card { background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border-color); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+    
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; border: 1px solid transparent;
+    }
+    .status-danger { background: var(--status-danger-bg); color: var(--status-danger); border-color: var(--status-danger-border); }
+    .status-warn { background: var(--status-warn-bg); color: var(--status-warn); border-color: var(--status-warn-border); }
+    .status-success { background: var(--status-success-bg); color: var(--status-success); border-color: var(--status-success-border); }
+    .status-neutral { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+
+    .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-header); border-bottom: 1px solid var(--border-color); }
+    .app-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 18px; color: var(--brand-dark); }
+    .app-logo i { color: var(--brand-accent); }
+    
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th { background: #f8fafc; text-align: left; padding: 12px 16px; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-dark); border-top: 1px solid var(--border-color); }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+    
+    .divider { height: 1px; background: var(--border-color); margin: 24px 0; }
+  </style>
+</head>
+<body>
+
+  <header class="showcase-header">
+    <a href="#" class="brand-logo"><i class="fa-solid fa-shield-halved"></i> PhisSafe - Professional UI</a>
+    <nav class="showcase-nav">
+      <a href="#auth" class="active">Auth</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#results">Scan Results</a>
+      <a href="#history">History</a>
+      <a href="#admin">Admin Panel</a>
+    </nav>
+  </header>
+
+  <div class="container">
+
+    <!-- ==============================================================
+         1. AUTHENTICATION (Login & Register combined for showcase flow)
+         ============================================================== -->
+    <div class="section-title-wrapper" id="auth">
+      <div>
+        <h2 class="section-title">1. Authentication <span class="badge">FR-01, FR-03</span></h2>
+        <p class="section-desc">Clean layout integrating the original Crimson brand with professional enterprise styling.</p>
+      </div>
+    </div>
+
+    <div class="viewport-grid">
+      <!-- Desktop Login -->
+      <div class="frame-desktop">
+        <div class="frame-desktop-bar">
+          <div class="browser-dots"><div class="browser-dot dot-r"></div><div class="browser-dot dot-y"></div><div class="browser-dot dot-g"></div></div>
+          <div class="browser-address"><i class="fa-solid fa-lock" style="color: #10b981;"></i> https://phissafe.app/login</div>
+        </div>
+        
+        <div style="display: flex; min-height: 600px; background: #fff;">
+          <div style="width: 50%; padding: 48px; display: flex; flex-direction: column; justify-content: center;">
+            <div class="app-logo" style="margin-bottom: 32px; font-size: 24px;"><i class="fa-solid fa-lock"></i> PhisSafe</div>
+            <h1 style="font-size: 24px; font-weight: 700; color: var(--brand-dark); margin-bottom: 6px;">Log in to your Account</h1>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 28px;">Welcome back! Select a method to log in.</p>
+            
+            <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+              <button class="btn-outline" style="flex: 1;"><i class="fa-brands fa-google" style="color: #ea4335;"></i> Google</button>
+              <button class="btn-outline" style="flex: 1;"><i class="fa-brands fa-github"></i> GitHub</button>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 24px;">
+              <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+              <div style="padding: 0 12px; font-size: 12px; color: var(--text-light); text-transform: uppercase; font-weight: 600;">Or use email</div>
+              <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Email Address</label>
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" class="input-field has-icon" value="user@example.com">
+            </div>
+            <div class="input-group">
+              <div style="display: flex; justify-content: space-between;">
+                <label class="input-label">Password</label>
+                <a href="#" style="font-size: 13px; color: var(--brand-accent); text-decoration: none; font-weight: 500;">Forgot password?</a>
+              </div>
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" class="input-field has-icon" value="••••••••••••">
+            </div>
+
+            <button class="btn-primary" style="width: 100%; margin-top: 8px;">Login to Account</button>
+            
+            <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 24px;">
+              Don't have an account? <a href="#" style="color: var(--brand-accent); font-weight: 600; text-decoration: none;">Create an account</a>
+            </p>
+          </div>
+
+          <!-- Right Banner -->
+          <div style="width: 50%; background: linear-gradient(135deg, #dc2626, #991b1b); padding: 48px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; text-align: center; align-items: center;">
+            <div></div>
+            <div>
+              <i class="fa-solid fa-shield-halved" style="font-size: 72px; margin-bottom: 24px; opacity: 0.9;"></i>
+              <h2 style="font-size: 28px; font-weight: 700; line-height: 1.2; margin-bottom: 16px;">Protecting Everyone from Phishing</h2>
+              <p style="font-size: 15px; opacity: 0.85; max-width: 340px; line-height: 1.6; margin: 0 auto;">
+                Advanced machine learning combined with phased hybrid URL & SSL analysis.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 28px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: #ffffff;"></div>
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></div>
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Registration -->
+      <div class="frame-mobile-wrapper">
+        <div class="frame-mobile-label"><i class="fa-solid fa-mobile-screen"></i> Mobile View</div>
+        <div class="frame-mobile" style="background: #fff;">
+          <div class="phone-notch"></div>
+          <div class="phone-screen-content" style="padding-top: 24px;">
+            <div class="app-logo" style="margin-bottom: 24px; justify-content: center; font-size: 22px;"><i class="fa-solid fa-lock"></i> PhisSafe</div>
+            
+            <h1 style="font-size: 20px; font-weight: 700; color: var(--brand-dark); margin-bottom: 4px; text-align: center;">Welcome Back</h1>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 24px; text-align: center;">Log in to access URL Scanner.</p>
+            
+            <button class="btn-outline" style="width: 100%; margin-bottom: 16px;"><i class="fa-brands fa-google" style="color: #ea4335;"></i> Google Login</button>
+            
+            <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 16px;">or use email</div>
+
+            <div class="input-group">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" class="input-field has-icon" value="user@example.com">
+            </div>
+            <div class="input-group">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" class="input-field has-icon" value="••••••••">
+            </div>
+
+            <button class="btn-primary" style="width: 100%; margin-top: 8px;">Login</button>
+            
+            <div style="background: var(--status-danger-bg); border-radius: 12px; padding: 14px; margin-top: 24px; text-align: center;">
+              <i class="fa-solid fa-shield-virus" style="color: var(--brand-accent); font-size: 24px;"></i>
+              <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-top: 6px;">Phished Link Guard</div>
+              <div style="font-size: 11px; color: #64748b;">Scan URLs before clicking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==============================================================
+         2. DASHBOARD & URL SCANNER
+         ============================================================== -->
+    <div class="section-title-wrapper" id="dashboard">
+      <div>
+        <h2 class="section-title">2. Dashboard & Scanner <span class="badge">Core Functionality</span></h2>
+        <p class="section-desc">A highly structured input interface combining professional presentation with the crimson brand colors.</p>
+      </div>
+    </div>
+
+    <div class="viewport-grid">
+      <!-- Desktop -->
+      <div class="frame-desktop">
+        <div class="frame-desktop-bar">
+          <div class="dots"><div class="browser-dot dot-r"></div><div class="browser-dot dot-y"></div><div class="browser-dot dot-g"></div></div>
+          <div class="browser-address"><i class="fa-solid fa-lock" style="color: #10b981;"></i> https://phissafe.app/dashboard</div>
+        </div>
+        
+        <div class="app-header">
+          <div class="app-logo"><i class="fa-solid fa-shield-halved"></i> PhisSafe Workspace</div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="text-align: right; line-height: 1.2;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Fizza Poonawala</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Standard User</div>
+            </div>
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #fef2f2; color: var(--brand-accent); display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 14px;">FP</div>
+          </div>
+        </div>
+        
+        <div style="padding: 32px; background: var(--bg-canvas);">
+          
+          <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <!-- Left Main Content -->
+            <div style="flex: 1;">
+              <div class="card" style="padding: 32px; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; border: none;">
+                <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Target URL Analysis</h1>
+                <p style="font-size: 14px; color: #94a3b8; margin-bottom: 24px;">Submit a fully qualified domain name (FQDN) or exact URL for evaluation against our hybrid detection pipeline.</p>
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 12px; background: #fff; padding: 8px; border-radius: var(--radius-lg); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);">
+                  <div style="flex: 1; position: relative;">
+                    <i class="fa-solid fa-link" style="position: absolute; left: 16px; top: 15px; color: var(--text-muted);"></i>
+                    <input type="text" class="input-field" value="https://paypa1-security-verify.com/login" style="padding-left: 44px; height: 48px; border: none; font-size: 15px; box-shadow: none;">
+                  </div>
+                  <button class="btn-primary" style="height: 48px; padding: 0 28px; font-size: 15px;"><i class="fa-solid fa-microscope"></i> Initiate Scan</button>
+                </div>
+              </div>
+              
+              <h3 style="font-size: 16px; font-weight: 600; color: var(--brand-dark); margin-bottom: 16px;">Detection Pipeline Stages</h3>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                <div class="card" style="padding: 20px; margin-bottom: 0;">
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phase 01</div>
+                  <div style="font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">URL Structure</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Lexical entropy & typosquatting detection.</div>
+                </div>
+                <div class="card" style="padding: 20px; margin-bottom: 0;">
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phase 02</div>
+                  <div style="font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">Domain & SSL</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Registration records & certificate validation.</div>
+                </div>
+                <div class="card" style="padding: 20px; margin-bottom: 0;">
+                  <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Phase 03</div>
+                  <div style="font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">HTML Parsing</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Safe extraction of form actions & external links.</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Right Sidebar Stats -->
+            <div style="width: 280px;">
+              <div class="card" style="padding: 24px;">
+                <h3 style="font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 20px;">Your Statistics</h3>
+                
+                <div style="margin-bottom: 20px;">
+                  <div style="font-size: 32px; font-weight: 700; color: var(--brand-dark);">142</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Total Scans Executed</div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                  <div style="font-size: 32px; font-weight: 700; color: var(--brand-accent);">24</div>
+                  <div style="font-size: 13px; color: var(--text-muted);">Phishing Threats Blocked</div>
+                </div>
+                
+                <div class="divider" style="margin: 20px 0;"></div>
+                
+                <button class="btn-outline" style="width: 100%;">View Full History</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Dashboard -->
+      <div class="frame-mobile-wrapper">
+        <div class="frame-mobile-label"><i class="fa-solid fa-mobile-screen"></i> Mobile View</div>
+        <div class="frame-mobile">
+          <div class="phone-notch"></div>
+          <div class="app-header" style="padding: 12px 16px; border-bottom: none;">
+            <div class="app-logo" style="font-size: 18px;"><i class="fa-solid fa-shield-halved"></i> Workspace</div>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #fef2f2; color: var(--brand-accent); display: flex; justify-content: center; align-items: center; font-weight: 700; font-size: 12px;">FP</div>
+          </div>
+          
+          <div class="phone-screen-content">
+            <div class="card" style="padding: 20px; background: linear-gradient(135deg, #0f172a, #1e293b); color: #fff; border: none;">
+              <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">New Scan</h2>
+              <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">Submit a URL for analysis.</p>
+              
+              <div style="background: #fff; padding: 6px; border-radius: 12px; margin-bottom: 12px;">
+                <input type="text" class="input-field" value="paypa1-verify.com" style="border: none; box-shadow: none; padding: 0 12px;">
+              </div>
+              <button class="btn-primary" style="width: 100%;"><i class="fa-solid fa-microscope"></i> Initiate Scan</button>
+            </div>
+            
+            <h3 style="font-size: 15px; font-weight: 600; color: var(--brand-dark); margin-bottom: 12px; padding-left: 4px;">Recent Scans</h3>
+            <div class="card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="font-size: 13px; font-weight: 500; color: var(--text-main); word-break: break-all;">github.com/login</div>
+              <div style="display: flex; justify-content: space-between; margin-top: 12px;">
+                <span class="status-badge status-success" style="font-size: 10px; padding: 4px 8px;">LOW RISK (2%)</span>
+                <span style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Today</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==============================================================
+         3. SCAN RESULTS (High Risk Example)
+         ============================================================== -->
+    <div class="section-title-wrapper" id="results">
+      <div>
+        <h2 class="section-title">3. Scan Results (Explainability) <span class="badge">FR-13 to FR-18</span></h2>
+        <p class="section-desc">Presents prediction data and extracted features with the clear enterprise data visualization.</p>
+      </div>
+    </div>
+
+    <div class="viewport-grid">
+      <!-- Desktop -->
+      <div class="frame-desktop">
+        <div class="frame-desktop-bar">
+          <div class="dots"><div class="browser-dot dot-r"></div><div class="browser-dot dot-y"></div><div class="browser-dot dot-g"></div></div>
+          <div class="browser-address"><i class="fa-solid fa-lock" style="color: #10b981;"></i> https://phissafe.app/scan/result/88a2f1</div>
+        </div>
+        
+        <div style="padding: 32px; background: var(--bg-canvas);">
+          
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+            <div>
+              <div style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Analysis Report #88A2F1</div>
+              <h1 style="font-size: 26px; font-weight: 800; color: var(--brand-dark); word-break: break-all;">https://paypa1-security-verify.com/login</h1>
+            </div>
+            <button class="btn-outline"><i class="fa-solid fa-print"></i> Export PDF</button>
+          </div>
+
+          <!-- Alert Banner -->
+          <div style="background: linear-gradient(135deg, #dc2626, #991b1b); border-radius: var(--radius-md); padding: 24px 32px; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; color: #fff; box-shadow: var(--shadow-md);">
+            <div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px;"></i>
+                <h2 style="font-size: 22px; font-weight: 700;">High Risk Phishing Detected</h2>
+              </div>
+              <p style="font-size: 15px; margin-top: 6px; opacity: 0.9;">This domain poses a severe security threat. Do not submit credentials.</p>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 13px; font-weight: 600; text-transform: uppercase; opacity: 0.8;">Confidence Score</div>
+              <div style="font-size: 40px; font-weight: 800; line-height: 1;">94.2%</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 340px; gap: 24px;">
+            <!-- Left: Extracted Features -->
+            <div class="card" style="margin-bottom: 0;">
+              <h3 style="font-size: 18px; font-weight: 700; color: var(--brand-dark); margin-bottom: 20px;">Extracted Threat Indicators</h3>
+              
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Feature Category</th>
+                    <th>Observation</th>
+                    <th>Impact</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><i class="fa-solid fa-font" style="color: var(--text-muted); width: 24px;"></i> Lexical</td>
+                    <td>Domain contains deliberate character substitution ('paypa1').</td>
+                    <td><span class="status-badge status-danger">High</span></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa-solid fa-calendar-xmark" style="color: var(--text-muted); width: 24px;"></i> Domain Age</td>
+                    <td>Registered &lt; 72 hours ago.</td>
+                    <td><span class="status-badge status-danger">High</span></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa-solid fa-code" style="color: var(--text-muted); width: 24px;"></i> HTML Content</td>
+                    <td>Login form POST action points to an unverified external IP.</td>
+                    <td><span class="status-badge status-danger">High</span></td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa-solid fa-certificate" style="color: var(--text-muted); width: 24px;"></i> SSL Cert</td>
+                    <td>Valid, but issued by free-tier authority (Let's Encrypt).</td>
+                    <td><span class="status-badge status-warn">Medium</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Right: Actions & Metadata -->
+            <div>
+              <div class="card" style="margin-bottom: 24px; padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px;">Required Actions</h3>
+                <button class="btn-outline" style="width: 100%; justify-content: flex-start; margin-bottom: 12px;"><i class="fa-solid fa-flag" style="width: 20px; color: var(--text-muted);"></i> File Community Report</button>
+                <button class="btn-outline" style="width: 100%; justify-content: flex-start;"><i class="fa-solid fa-arrow-left" style="width: 20px; color: var(--text-muted);"></i> Return to Dashboard</button>
+              </div>
+
+              <div class="card" style="padding: 24px;">
+                <h3 style="font-size: 15px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px;">Scan Metadata</h3>
+                <div style="font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 12px;">
+                  <div style="display: flex; justify-content: space-between;"><span>Timestamp:</span> <strong style="color: var(--text-main);">Aug 27, 2026 21:04</strong></div>
+                  <div style="display: flex; justify-content: space-between;"><span>Model Used:</span> <strong style="color: var(--text-main);">Random Forest Classifier</strong></div>
+                  <div style="display: flex; justify-content: space-between;"><span>Verified List:</span> <strong style="color: var(--text-main);">Checked (No Match)</strong></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile View -->
+      <div class="frame-mobile-wrapper">
+        <div class="frame-mobile-label"><i class="fa-solid fa-mobile-screen"></i> Mobile View</div>
+        <div class="frame-mobile">
+          <div class="phone-notch"></div>
+          <div class="app-header" style="padding: 12px 16px; border-bottom: none;">
+            <div class="app-logo" style="font-size: 18px;"><i class="fa-solid fa-arrow-left" style="color: var(--text-main);"></i> Results</div>
+          </div>
+          
+          <div class="phone-screen-content">
+            <div style="background: linear-gradient(135deg, #dc2626, #991b1b); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 20px; color: #fff; box-shadow: var(--shadow-md);">
+              <h2 style="font-size: 18px; font-weight: 700;">HIGH RISK</h2>
+              <div style="font-size: 36px; font-weight: 800; margin-top: 8px;">94.2%</div>
+            </div>
+            
+            <div class="card" style="padding: 16px;">
+              <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Threat Indicators</h3>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="font-size: 13px; display: flex; gap: 10px; align-items: flex-start;"><i class="fa-solid fa-xmark" style="color: var(--brand-accent); margin-top: 2px;"></i> Typosquatting ('paypa1')</div>
+                <div style="font-size: 13px; display: flex; gap: 10px; align-items: flex-start;"><i class="fa-solid fa-xmark" style="color: var(--brand-accent); margin-top: 2px;"></i> Domain age &lt; 72 hours</div>
+                <div style="font-size: 13px; display: flex; gap: 10px; align-items: flex-start;"><i class="fa-solid fa-xmark" style="color: var(--brand-accent); margin-top: 2px;"></i> Suspicious Form POST</div>
+              </div>
+            </div>
+            
+            <button class="btn-outline" style="width: 100%;"><i class="fa-solid fa-flag"></i> Report this URL</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==============================================================
+         4. SCAN HISTORY & REPORTING (Combined for showcase flow)
+         ============================================================== -->
+    <div class="section-title-wrapper" id="history">
+      <div>
+        <h2 class="section-title">4. Personal History & Community Reporting <span class="badge">FR-19, Section 7</span></h2>
+        <p class="section-desc">Data tables for past analyses and structured forms for submitting community threat reports.</p>
+      </div>
+    </div>
+
+    <div class="viewport-grid">
+      <!-- Desktop -->
+      <div class="frame-desktop">
+        <div class="frame-desktop-bar">
+          <div class="dots"><div class="browser-dot dot-r"></div><div class="browser-dot dot-y"></div><div class="browser-dot dot-g"></div></div>
+          <div class="browser-address"><i class="fa-solid fa-lock" style="color: #10b981;"></i> https://phissafe.app/history</div>
+        </div>
+        
+        <div style="padding: 32px; background: var(--bg-canvas);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h2 style="font-size: 20px; font-weight: 700; color: var(--brand-dark);">Analysis History</h2>
+            <div style="display: flex; gap: 12px;">
+              <input type="text" class="input-field" placeholder="Search URLs..." style="height: 40px; padding: 8px 16px; width: 240px;">
+              <button class="btn-outline" style="height: 40px;"><i class="fa-solid fa-filter"></i> Filter</button>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 40px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Target URL</th>
+                  <th>Date & Time</th>
+                  <th>Prediction</th>
+                  <th>Score</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 500;">https://paypa1-security-verify.com</td>
+                  <td style="color: var(--text-muted);">Aug 27, 21:04</td>
+                  <td><span class="status-badge status-danger">Phishing</span></td>
+                  <td style="font-weight: 700;">94.2%</td>
+                  <td><a href="#" style="color: var(--brand-accent); font-weight: 600; font-size: 13px; text-decoration: none;">View Report</a></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 500;">https://github.com/login</td>
+                  <td style="color: var(--text-muted);">Aug 26, 14:15</td>
+                  <td><span class="status-badge status-success">Legitimate</span></td>
+                  <td style="font-weight: 700;">2.1%</td>
+                  <td><a href="#" style="color: var(--brand-accent); font-weight: 600; font-size: 13px; text-decoration: none;">View Report</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Reporting Form -->
+          <h2 style="font-size: 20px; font-weight: 700; color: var(--brand-dark); margin-bottom: 20px;">Submit Community Report</h2>
+          <div class="card" style="padding: 32px; max-width: 700px;">
+            <div class="input-group">
+              <label class="input-label">URL to Report</label>
+              <input type="text" class="input-field" value="https://paypa1-security-verify.com">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Report Category</label>
+              <select class="input-field" style="appearance: auto; cursor: pointer;">
+                <option>False Negative (Incorrect Prediction)</option>
+                <option selected>Known Malicious (Verify Request)</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 24px;">
+              <label class="input-label">Additional Context (Optional)</label>
+              <textarea class="input-field" style="height: 100px; padding: 16px; font-family: inherit; resize: none;">Impersonating PayPal login portal requesting credit card CVV.</textarea>
+            </div>
+            <button class="btn-primary">Submit to Review Queue</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile View -->
+      <div class="frame-mobile-wrapper">
+        <div class="frame-mobile-label"><i class="fa-solid fa-mobile-screen"></i> Mobile View</div>
+        <div class="frame-mobile">
+          <div class="phone-notch"></div>
+          <div class="app-header" style="padding: 12px 16px; border-bottom: none;">
+            <div class="app-logo" style="font-size: 18px;"><i class="fa-solid fa-clock-rotate-left" style="color: var(--text-main);"></i> History</div>
+          </div>
+          
+          <div class="phone-screen-content">
+            <input type="text" class="input-field" placeholder="Search..." style="margin-bottom: 20px;">
+            
+            <div class="card" style="padding: 16px; margin-bottom: 12px;">
+              <div style="font-size: 13px; font-weight: 600; color: var(--text-main); word-break: break-all;">paypa1-security-verify.com</div>
+              <div style="display: flex; justify-content: space-between; margin-top: 12px; align-items: center;">
+                <span class="status-badge status-danger" style="font-size: 10px; padding: 4px 8px;">PHISHING (94%)</span>
+                <span style="font-size: 12px; color: var(--text-muted);">Aug 27</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ==============================================================
+         5. ADMINISTRATOR PANEL
+         ============================================================== -->
+    <div class="section-title-wrapper" id="admin">
+      <div>
+        <h2 class="section-title">5. Administrator Dashboard & Confirmed List <span class="badge">Section 4.2 & 8 SRS</span></h2>
+        <p class="section-desc">Protected workspace for reviewing escalated community reports and managing the Verified Phishing override database.</p>
+      </div>
+    </div>
+
+    <div class="viewport-grid">
+      <!-- Desktop -->
+      <div class="frame-desktop">
+        <div class="frame-desktop-bar" style="background: #0f172a; border-bottom: none;">
+          <div class="dots"><div class="browser-dot dot-r"></div><div class="browser-dot dot-y"></div><div class="browser-dot dot-g"></div></div>
+          <div class="browser-address" style="background: #1e293b; color: #94a3b8; border: none;"><i class="fa-solid fa-shield-halved" style="color: #64748b;"></i> https://phissafe.app/admin</div>
+        </div>
+        
+        <!-- Dark Admin Header -->
+        <div style="padding: 20px 32px; background: #0f172a; color: #fff; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 12px;">
+            <i class="fa-solid fa-user-shield" style="color: var(--brand-accent);"></i> Admin Operations Console
+          </div>
+          <span class="status-badge status-danger" style="background: rgba(220,38,38,0.2); border: none; padding: 6px 12px;">Admin Access Level</span>
+        </div>
+
+        <div style="padding: 32px; background: var(--bg-canvas);">
+          
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px;">
+            <div class="card" style="padding: 24px; border-top: 4px solid var(--status-warn);">
+              <div style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Pending Reviews</div>
+              <div style="font-size: 36px; font-weight: 800; color: var(--brand-dark); margin-top: 8px;">12</div>
+            </div>
+            <div class="card" style="padding: 24px; border-top: 4px solid var(--status-danger);">
+              <div style="font-size: 13px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Verified Database Entries</div>
+              <div style="font-size: 36px; font-weight: 800; color: var(--brand-dark); margin-top: 8px;">148</div>
+            </div>
+          </div>
+
+          <h3 style="font-size: 18px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px;">Escalated Reports (Reached 20 Vote Threshold)</h3>
+          <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 40px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Reported URL</th>
+                  <th>Consensus</th>
+                  <th>ML Score</th>
+                  <th>Admin Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 500;">https://paypa1-security-verify.com</td>
+                  <td>22 Votes <span class="status-badge status-danger" style="padding: 2px 8px; font-size: 11px; margin-left: 8px;">91% Phish</span></td>
+                  <td style="font-weight: 700;">94.2%</td>
+                  <td style="display: flex; gap: 12px;">
+                    <button class="btn-primary" style="padding: 6px 16px; font-size: 13px;">Verify</button>
+                    <button class="btn-outline" style="padding: 6px 16px; font-size: 13px;">Reject</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 style="font-size: 18px; font-weight: 700; color: var(--brand-dark); margin-bottom: 16px;">Verified Phishing URL Database (Exact Match)</h3>
+          <div class="card" style="padding: 0; overflow: hidden;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Confirmed URL</th>
+                  <th>Date Added</th>
+                  <th>Authored By</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 500; font-family: monospace; font-size: 13px;">https://secure-login-chase-update.info/signin</td>
+                  <td style="color: var(--text-muted);">Aug 24, 2026</td>
+                  <td>Admin_02</td>
+                  <td><button class="btn-outline" style="padding: 6px 16px; font-size: 13px; color: var(--status-danger); border-color: var(--status-danger-border);">Revoke</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Mobile View -->
+      <div class="frame-mobile-wrapper">
+        <div class="frame-mobile-label"><i class="fa-solid fa-mobile-screen"></i> Mobile View</div>
+        <div class="frame-mobile">
+          <div class="phone-notch"></div>
+          <div class="app-header" style="padding: 16px; background: #0f172a; color: #fff; border-bottom: none;">
+            <div class="app-logo" style="font-size: 18px; color: #fff;"><i class="fa-solid fa-user-shield"></i> Admin</div>
+          </div>
+          
+          <div class="phone-screen-content">
+            <h4 style="font-size: 15px; font-weight: 700; margin: 16px 0;">Escalated Reports (12)</h4>
+            
+            <div class="card" style="padding: 16px;">
+              <div style="font-size: 13px; font-weight: 600; word-break: break-all;">paypa1-security-verify.com</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin: 8px 0;">Consensus: 91% Phishing</div>
+              
+              <div style="display: flex; gap: 12px; margin-top: 16px;">
+                <button class="btn-primary" style="flex: 1;">Verify</button>
+                <button class="btn-outline" style="flex: 1;">Reject</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
