@@ -29,3 +29,6 @@ next-env.d.ts
 
 # Environment Variables
 .env
+
+#Dataset
+.csv
