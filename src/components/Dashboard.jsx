@@ -223,7 +223,9 @@ export default function Dashboard({ user }) {
               <hr className="my-6" />
 
               {/* History */}
-              <button className="w-full border rounded-lg py-3 text-gray-500">View Full History</button>
+              <button onClick={() => router.push("/history")} className="w-full border rounded-lg py-3 text-gray-500 hover:text-red-600">
+              View Full History
+              </button>
 
             </div>
 

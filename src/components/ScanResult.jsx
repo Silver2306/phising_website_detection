@@ -48,7 +48,7 @@ export default function ScanResult({ url }) {
             </div>
 
             {/*FLASK NEEDED FIZZA*/}
-            <p className="mt-2">NEED INTRIGAYTION</p>
+            <p className="mt-2">NEED INTRIGATION</p>
           </div>
 
           {/* Score */}
@@ -102,7 +102,7 @@ export default function ScanResult({ url }) {
             </table>
           </div>
 
-          {/* Right Side INTRIGATED LATER*/}
+          {/* Right Side INTRIGATE LATER*/}
           <div>
             {/* Actions */}
             <div className="bg-white border rounded-xl p-6 mb-6">
