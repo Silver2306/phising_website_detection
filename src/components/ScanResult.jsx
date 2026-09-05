@@ -109,7 +109,8 @@ export default function ScanResult({ url }) {
               <h2 className="font-bold text-black mb-4">Required Actions</h2>
 
               {/* Report */}
-              <button disabled className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 mb-3">
+              <button onClick={() => router.push(`/report?url=${encodeURIComponent(url)}`)}
+              className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 hover:text-red-600 mb-3">
                 <FaFlag />Report this URL
               </button>
 
