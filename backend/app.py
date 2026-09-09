@@ -4,8 +4,8 @@ from urllib.parse import urlparse
 
 app = Flask(__name__)
 
-model = joblib.load("backend/models/phissafe_random_forest.joblib")
-features = joblib.load("backend/models/phissafe_features.joblib")
+model = joblib.load("backend/models/phissafe_random_forest_v2.joblib")
+features = joblib.load("backend/models/phissafe_features_seven_v2.joblib")
 
 @app.route("/health", methods=["GET"])
 def health():
