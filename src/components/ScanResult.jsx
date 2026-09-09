@@ -1,16 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import {FaArrowLeft,FaFlag,FaPrint,FaTriangleExclamation} from "react-icons/fa6";
+import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation } from "react-icons/fa6";
 
-export default function ScanResult({ url }) {
+export default function ScanResult() {
 
   const router = useRouter();
-  {/*FLASK COMPONENET FIZZA*/}
-  const prediction = "Pending";
+  const searchParams = useSearchParams();
+
+  const url = searchParams.get("url");
+  const prediction = searchParams.get("prediction");
   const score = "--";
   const indicators = [];
+  const isPhishing = prediction === "phishing";
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -43,12 +46,12 @@ export default function ScanResult({ url }) {
 
             <div className="flex items-center gap-3">
               <FaTriangleExclamation className="text-2xl" />
-              <h2 className="text-xl font-bold">Analysis Pending</h2>{/*WILL CHNAGE THIS*/}
+              <h2 className="text-xl font-bold">{isPhishing ? "Phishing Website" : "Legitimate Website"}</h2>
 
             </div>
 
             {/*FLASK NEEDED FIZZA*/}
-            <p className="mt-2">NEED INTRIGATION</p>
+            <p className="mt-2">{isPhishing ? "This URL may be harmful. Please exercise caution." : "This URL appears to be safe."}</p>
           </div>
 
           {/* Score */}
@@ -110,7 +113,7 @@ export default function ScanResult({ url }) {
 
               {/* Report */}
               <button onClick={() => router.push(`/report?url=${encodeURIComponent(url)}`)}
-              className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 hover:text-red-600 mb-3">
+                className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 hover:text-red-600 mb-3">
                 <FaFlag />Report this URL
               </button>
 
@@ -135,7 +138,7 @@ export default function ScanResult({ url }) {
                   <span className="text-gray-500">Model Used:</span>
                   <span className="font-semibold">Not connected</span>
                 </div>
-                
+
                 {/*WILL BE INTRIGATED LATER*/}
                 <div className="flex justify-between">
                   <span className="text-gray-500">Database Check:</span>

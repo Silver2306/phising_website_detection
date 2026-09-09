@@ -98,36 +98,43 @@ def extract_basic_features(url):
     normalized_url = url.rstrip("/")
     url_without_protocol = normalized_url.split("://", 1)[-1]
 
+    if url_without_protocol.startswith("www."):
+        url_for_counting = url_without_protocol[4:-1]
+        ratio_length = len(normalized_url) - 1
+    else:
+        url_for_counting = url_without_protocol
+        ratio_length = len(normalized_url)
+
     no_of_letters = sum(
         char.isalpha()
-        for char in url_without_protocol
+        for char in url_for_counting
     )
 
     no_of_digits = sum(
         char.isdigit()
-        for char in url_without_protocol
+        for char in url_for_counting
     )
 
     special_chars = sum(
         not char.isalnum()
-        for char in url_without_protocol
-    )
+    for char in url_for_counting
+)
 
     # Feature 4: LetterRatioInURL
     letter_ratio = round(
-        no_of_letters / len(normalized_url),
-        3
+    no_of_letters / ratio_length,
+    3
     )
-
+    
     # Feature 5: DegitRatioInURL
     digit_ratio = round(
-        no_of_digits / len(normalized_url),
+        no_of_digits / ratio_length,
         3
     )
 
     # Feature 6: SpacialCharRatioInURL
     special_char_ratio = round(
-        special_chars / len(normalized_url),
+        special_chars / ratio_length,
         3
     )
 

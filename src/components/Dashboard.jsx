@@ -18,6 +18,7 @@ export default function Dashboard({ user }) {
 
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
 
   // Get logged-in user's name
   const name =
@@ -45,20 +46,51 @@ export default function Dashboard({ user }) {
   }
 
   // URL form
-  function handleScan(e) {
-  e.preventDefault();
+  async function handleScan(e) {
+    e.preventDefault();
 
-  const finalUrl = url.trim();
+    const finalUrl = url.trim();
 
-  if (!finalUrl) {
-    setMessage("Please enter a URL.");
-    return;
+    if (!finalUrl) {
+      setMessage("Please enter a URL.");
+      return;
+    }
+
+    try {
+      setIsScanning(true);
+      setMessage("Scanning...");
+
+      const response = await fetch(
+        "http://localhost:5000/scan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            url: finalUrl,
+          }),
+        }
+      );
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(result.error || "Scan failed.");
+        return;
+      }
+
+      // Redirect to results page
+      router.push(
+        `/scan/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
+      );
+
+    } catch (error) {
+      setMessage("Could not connect to the scanning service.");
+      console.error(error);
+    } finally {
+      setIsScanning(false);
+    }
   }
-
-  router.push(
-    `/scan/result?url=${encodeURIComponent(finalUrl)}`
-  );
-}
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -69,7 +101,7 @@ export default function Dashboard({ user }) {
 
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <LiaFishSolid  className="text-red-600 text-2xl"/>
+            <LiaFishSolid className="text-red-600 text-2xl" />
             <h1 className="font-semibold text-black text-lg">PhisSafe Dashboard</h1>
           </div>
 
@@ -87,7 +119,7 @@ export default function Dashboard({ user }) {
 
             {/* Logout */}
             <button
-              onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
+              onClick={handleLogout} disabled={isScanning} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
               <FaRightFromBracket />
               <span className="hidden sm:block">Logout</span>
             </button>
@@ -130,14 +162,15 @@ export default function Dashboard({ user }) {
                       onChange={(e) => {
                         setUrl(e.target.value);
                         setMessage("");
-                      }}/>
+                      }} />
 
                   </div>
 
                   {/* Scan Button */}
-                  <button type="submit"
+                  <button type="submit" disabled={isScanning}
                     className="h-12 bg-red-600 hover:bg-red-700 text-white px-6 rounded-lg font-semibold flex justify-center items-center gap-2">
-                    <FaMicroscope />Initiate Scan
+                    {isScanning ? "" : <FaMicroscope />}
+                    {isScanning ? "Scanning..." : "Initiate Scan"}
                   </button>
 
                 </div>
@@ -224,7 +257,7 @@ export default function Dashboard({ user }) {
 
               {/* History */}
               <button onClick={() => router.push("/history")} className="w-full border rounded-lg py-3 text-gray-500 hover:text-red-600">
-              View Full History
+                View Full History
               </button>
 
             </div>

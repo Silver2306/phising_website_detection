@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from services.feature_extractor import extract_basic_features
 from services.model_service import model, features
 
+import pandas as pd
 scan_bp = Blueprint("scan", __name__)
 
 
@@ -38,7 +39,16 @@ def scan():
         for feature in features
     ]
 
-    prediction = model.predict([input_features])
+    #Send features as a dataframe, or else an error occurs, not sure if its the root cause tho, multiple patches applied
+    input_data = pd.DataFrame(
+        [[extracted_features[feature] for feature in features]],
+        columns=features
+    )
+    
+
+    prediction = model.predict(input_data)
+    probabilities = model.predict_proba(input_data)
+
 
     if prediction[0] == 0:
         result = "phishing"
