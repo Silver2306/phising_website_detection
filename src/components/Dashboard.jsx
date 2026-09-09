@@ -61,7 +61,7 @@ export default function Dashboard({ user }) {
       setMessage("Scanning...");
 
       const response = await fetch(
-        "http://localhost:5000/scan",
+        "/api/scan",
         {
           method: "POST",
           headers: {
