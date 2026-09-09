@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "python backend/app.py"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
@@ -22,6 +24,23 @@
     "@tailwindcss/postcss": "^4.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "concurrently": "^10.0.5",
     "postcss": "^8.4.0"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Silver2306/phising_website_detection.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Silver2306/phising_website_detection/issues"
+  },
+  "homepage": "https://github.com/Silver2306/phising_website_detection#readme"
 }
