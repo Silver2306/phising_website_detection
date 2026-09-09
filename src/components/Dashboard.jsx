@@ -46,36 +46,19 @@ export default function Dashboard({ user }) {
 
   // URL form
   function handleScan(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!url.trim()) {
-      setMessage("Please enter a URL.");
-      return;
-    }
+  const finalUrl = url.trim();
 
-    let finalUrl = url.trim();
-
-    // Add https:// if user doesn't type it
-    if (
-      !finalUrl.startsWith("http://") &&
-      !finalUrl.startsWith("https://")
-    ) {
-      finalUrl = "https://" + finalUrl;
-    }
-
-    // Check URL
-    try {
-      new URL(finalUrl);
-    } catch {
-      setMessage("Please enter a valid URL.");
-      return;
-    }
-
-    setUrl(finalUrl);
-    setMessage("URL is ready to scan.");
-
-    // Flask API connection will be added here later
+  if (!finalUrl) {
+    setMessage("Please enter a URL.");
+    return;
   }
+
+  router.push(
+    `/scan/result?url=${encodeURIComponent(finalUrl)}`
+  );
+}
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -240,7 +223,9 @@ export default function Dashboard({ user }) {
               <hr className="my-6" />
 
               {/* History */}
-              <button className="w-full border rounded-lg py-3 text-gray-500">View Full History</button>
+              <button onClick={() => router.push("/history")} className="w-full border rounded-lg py-3 text-gray-500 hover:text-red-600">
+              View Full History
+              </button>
 
             </div>
 
