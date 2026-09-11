@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation } from "react-icons/fa6";
+import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
 
 export default function ScanResult() {
 
@@ -11,6 +11,8 @@ export default function ScanResult() {
 
   const url = searchParams.get("url");
   const prediction = searchParams.get("prediction");
+  // guest=true is appended by GuestDashboard when navigating here.
+  const isGuest = searchParams.get("guest") === "true";
   const score = "--";
   const indicators = [];
   const isPhishing = prediction === "phishing";
@@ -117,9 +119,11 @@ export default function ScanResult() {
                 <FaFlag />Report this URL
               </button>
 
-              {/* Dashboard BACK BUTTON*/}
-              <button onClick={() => router.push("/dashboard")} className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-600 hover:text-red-600">
-                <FaArrowLeft />Return to Dashboard
+              {/* Dashboard / Guest BACK BUTTON — context-aware */}
+              <button
+                onClick={() => router.push(isGuest ? "/guest" : "/dashboard")}
+                className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-600 hover:text-red-600">
+                <FaArrowLeft />{isGuest ? "Back to Guest Scanner" : "Return to Dashboard"}
               </button>
             </div>
 
@@ -149,6 +153,35 @@ export default function ScanResult() {
             </div>
           </div>
         </div>
+
+        {/* Guest upsell banner — only shown when browsing as a guest */}
+        {isGuest && (
+          <div className="mt-8 bg-white border border-dashed border-red-300 rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <FaUserPlus className="text-red-600 text-2xl shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-black">Save this result — create a free account</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Guests cannot save scan history. Sign up to track all your scans, view statistics,
+                  and report phishing URLs.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <button
+                onClick={() => router.push("/register")}
+                className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg">
+                Create Account
+              </button>
+              <button
+                onClick={() => router.push("/")}
+                className="border rounded-lg px-5 py-2.5 text-sm text-gray-500 hover:text-red-600">
+                Sign In
+              </button>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );

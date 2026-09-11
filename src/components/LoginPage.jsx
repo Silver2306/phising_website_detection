@@ -157,6 +157,12 @@ export default function LoginPage() {
             {loading ? "Logging in..." : "Login"}
           </button>
 
+          <div className="text-center mt-4">
+            <Link href="/guest" className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2">
+              Continue as Guest
+            </Link>
+          </div>
+
         </form>
         
         </div>
