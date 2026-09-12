@@ -4,15 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
 
-export default function ScanResult() {
+export default function ScanResult({ isGuest = false }) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const url = searchParams.get("url");
   const prediction = searchParams.get("prediction");
-  // guest=true is appended by GuestDashboard when navigating here.
-  const isGuest = searchParams.get("guest") === "true";
+  // isGuest is passed as a prop by the parent page — not read from the URL.
   const score = "--";
   const indicators = [];
   const isPhishing = prediction === "phishing";
@@ -21,6 +20,15 @@ export default function ScanResult() {
     <div className="min-h-screen bg-slate-50">
 
       <main className="max-w-screen-xl mx-auto px-6 py-8">
+
+        {/* Back button — guests only, sits above the report header */}
+        {isGuest && (
+          <button
+            onClick={() => router.push("/guest")}
+            className="flex items-center gap-2 text-gray-500 hover:text-red-600 text-sm font-medium mb-6">
+            <FaArrowLeft />Back to Scanner
+          </button>
+        )}
 
         {/* Top Section */}
         <div className="flex justify-between items-start mb-6">
@@ -109,48 +117,49 @@ export default function ScanResult() {
 
           {/* Right Side INTRIGATE LATER*/}
           <div>
-            {/* Actions */}
-            <div className="bg-white border rounded-xl p-6 mb-6">
-              <h2 className="font-bold text-black mb-4">Required Actions</h2>
+            {/* Required Actions — logged-in users only */}
+            {!isGuest && (
+              <div className="bg-white border rounded-xl p-6 mb-6">
+                <h2 className="font-bold text-black mb-4">Required Actions</h2>
 
-              {/* Report */}
-              <button onClick={() => router.push(`/report?url=${encodeURIComponent(url)}`)}
-                className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 hover:text-red-600 mb-3">
-                <FaFlag />Report this URL
-              </button>
+                <button onClick={() => router.push(`/report?url=${encodeURIComponent(url)}`)}
+                  className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-500 hover:text-red-600 mb-3">
+                  <FaFlag />Report this URL
+                </button>
 
-              {/* Dashboard / Guest BACK BUTTON — context-aware */}
-              <button
-                onClick={() => router.push(isGuest ? "/guest" : "/dashboard")}
-                className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-600 hover:text-red-600">
-                <FaArrowLeft />{isGuest ? "Back to Guest Scanner" : "Return to Dashboard"}
-              </button>
-            </div>
+                <button
+                  onClick={() => router.push("/dashboard")}
+                  className="w-full border rounded-lg px-4 py-3 flex items-center gap-3 text-gray-600 hover:text-red-600">
+                  <FaArrowLeft />Return to Dashboard
+                </button>
+              </div>
+            )}
 
-            {/* Metadata BOTTOM RIGHT PART*/}
-            <div className="bg-white border rounded-xl p-6">
-              <h2 className="font-bold text-black mb-4">Scan Metadata</h2>
-              <div className="text-sm">
+            {/* Scan Metadata — logged-in users only */}
+            {!isGuest && (
+              <div className="bg-white border rounded-xl p-6">
+                <h2 className="font-bold text-black mb-4">Scan Metadata</h2>
+                <div className="text-sm">
 
-                <div className="flex justify-between mb-4">
-                  <span className="text-gray-500">Prediction:</span>
-                  <span className="font-semibold">{prediction}  </span>
-                </div>
+                  <div className="flex justify-between mb-4">
+                    <span className="text-gray-500">Prediction:</span>
+                    <span className="font-semibold">{prediction}  </span>
+                  </div>
 
-                {/*WILL BE INTRIGATED LATER*/}
-                <div className="flex justify-between mb-4">
-                  <span className="text-gray-500">Model Used:</span>
-                  <span className="font-semibold">Not connected</span>
-                </div>
+                  {/*WILL BE INTRIGATED LATER*/}
+                  <div className="flex justify-between mb-4">
+                    <span className="text-gray-500">Model Used:</span>
+                    <span className="font-semibold">Not connected</span>
+                  </div>
 
-                {/*WILL BE INTRIGATED LATER*/}
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Database Check:</span>
-                  <span className="font-semibold">Not connected</span>
-
+                  {/*WILL BE INTRIGATED LATER*/}
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Database Check:</span>
+                    <span className="font-semibold">Not connected</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

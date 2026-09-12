@@ -4,6 +4,7 @@ import { createClient } from "../../../lib/supabase/server";
 
 import ScanResult from "../../../components/ScanResult";
 
+// Authenticated users only. Guests have their own route at /guest/result.
 export default async function ScanResultPage({ searchParams }) {
 
   const supabase = await createClient();
@@ -12,15 +13,12 @@ export default async function ScanResultPage({ searchParams }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Check login
   if (!user) {
     redirect("/");
   }
 
-  // Get URL sent from dashboard
   const params = await searchParams;
-
   const url = params.url || "";
 
-  return <ScanResult url={url} />;
+  return <ScanResult url={url} isGuest={false} />;
 }

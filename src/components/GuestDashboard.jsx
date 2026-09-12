@@ -49,9 +49,9 @@ export default function GuestDashboard() {
         return;
       }
 
-      // guest=true tells the result page to show the upsell nudge.
+      // Navigate to the dedicated guest result route.
       router.push(
-        `/scan/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}&guest=true`
+        `/guest/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
       );
     } catch (error) {
       setMessage("Could not connect to the scanning service.");
