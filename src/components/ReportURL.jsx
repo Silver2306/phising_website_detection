@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {FaArrowLeft,FaFlag} from "react-icons/fa6";
+import { createClient } from "../lib/supabase/client";
 
 export default function ReportURL({ url, user }) {
 
@@ -17,25 +18,51 @@ export default function ReportURL({ url, user }) {
   const [message, setMessage] = useState("");
 
   {/* SUBMIT REPORT */}
-  function handleSubmit(e) {
-    e.preventDefault();
-    setMessage("");
-    if (!reportUrl.trim()) {
-      setMessage("Please enter a URL.");
-      return;
-    }
-{/* NEED TO CHANGE THIS THE REPORT IS NOT SUBMITTED ITS JUST SHOWING FOR NOW AFTER INTRIGTION CHNAGE WILL HAPPEN*/}
-    if (!category) {
-      setMessage("Please select a report category.");
-      return;
-    }
+  async function handleSubmit(e) {
+  e.preventDefault();
 
-    {/*BACKEND DATABASE INTRIGRATION LATER Data to send:reportUrl,category,context,user.id*/}
+  setMessage("");
+
+  if (!reportUrl.trim()) {
+    setMessage("Please enter a URL.");
+    return;
+  }
+
+  if (!category) {
+    setMessage("Please select a report category.");
+    return;
+  }
+
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("reports")
+    .insert({
+      user_id: user.id,
+      url: reportUrl.trim(),
+      category: category,
+      context: context.trim() || null,
+    });
+
+  if (error) {
+    console.error("Report error:", error);
 
     setMessage(
-      "Report is ready to be submitted."
+      "Something went wrong. Please try again."
     );
+
+    return;
   }
+
+  setMessage(
+    "Report submitted successfully. Thank you!"
+  );
+
+  // Optional: clear form after success
+  setReportUrl("");
+  setCategory("");
+  setContext("");
+}
 
   return (
     <div className="min-h-screen bg-slate-50">

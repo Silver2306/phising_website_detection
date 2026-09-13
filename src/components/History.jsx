@@ -2,19 +2,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {FaArrowLeft,FaFilter,FaMagnifyingGlass} from "react-icons/fa6";
 
-export default function History() {
+import {
+  FaArrowLeft,
+  FaFilter,
+  FaMagnifyingGlass,
+} from "react-icons/fa6";
 
+export default function History({ scans }) {
   const router = useRouter();
+
   const [search, setSearch] = useState("");
 
-  {/* DATABASE BACKEND INTEGRATION LATER */}
-  const scans = [];
+  const filteredScans = scans.filter((scan) =>
+    scan.url.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-slate-50">
       <main className="max-w-screen-xl mx-auto px-6 py-8">
+
         {/* TOP SECTION */}
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -25,14 +32,16 @@ export default function History() {
             <p className="text-sm text-gray-500 mt-1">
               View your previous website scans.
             </p>
-
           </div>
 
           {/* BACK TO DASHBOARD */}
-          <button onClick={() => router.push("/dashboard")} className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600">
-            <FaArrowLeft />Dashboard
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600"
+          >
+            <FaArrowLeft />
+            Dashboard
           </button>
-
         </div>
 
         {/* SEARCH AND FILTER */}
@@ -40,15 +49,24 @@ export default function History() {
 
           {/* SEARCH */}
           <div className="relative">
-            <FaMagnifyingGlass className="absolute left-3 top-3 text-gray-500"/>
-            <input type="text" placeholder="Search URLs..." value={search}
+            <FaMagnifyingGlass className="absolute left-3 top-3 text-gray-500" />
+
+            <input
+              type="text"
+              placeholder="Search URLs..."
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="border rounded-lg h-10 w-60 pl-10 pr-4 outline-none text-black"/>
+              className="border rounded-lg h-10 w-60 pl-10 pr-4 outline-none text-black"
+            />
           </div>
 
           {/* FILTER */}
-          <button disabled className="border rounded-lg px-4 h-10 flex items-center gap-2 text-gray-500">
-            <FaFilter />Filter
+          <button
+            disabled
+            className="border rounded-lg px-4 h-10 flex items-center gap-2 text-gray-500"
+          >
+            <FaFilter />
+            Filter
           </button>
         </div>
 
@@ -62,15 +80,19 @@ export default function History() {
                 <th className="text-left p-4 text-gray-500">
                   Target URL
                 </th>
+
                 <th className="text-left p-4 text-gray-500">
                   Date & Time
                 </th>
+
                 <th className="text-left p-4 text-gray-500">
                   Prediction
                 </th>
+
                 <th className="text-left p-4 text-gray-500">
                   Score
                 </th>
+
                 <th className="text-left p-4 text-gray-500">
                   Action
                 </th>
@@ -79,70 +101,85 @@ export default function History() {
 
             {/* TABLE BODY */}
             <tbody>
-
-              {scans.length === 0 ? (
+              {filteredScans.length === 0 ? (
                 <tr>
                   <td
                     colSpan="5"
-                    className="p-10 text-center">
+                    className="p-10 text-center"
+                  >
                     <p className="font-semibold text-black">
                       No scan history found
                     </p>
+
                     <p className="text-sm text-gray-500 mt-1">
                       Your completed URL scans will appear here.
                     </p>
                   </td>
                 </tr>
-
               ) : (
-
-                scans.map((scan) => (
+                filteredScans.map((scan) => (
                   <tr
                     key={scan.id}
-                    className="border-b">
+                    className="border-b"
+                  >
 
                     {/* URL */}
-                    <td className="p-4 font-medium text-black">
+                    <td className="p-4 font-medium text-black break-all">
                       {scan.url}
                     </td>
 
                     {/* DATE */}
                     <td className="p-4 text-gray-500">
-                      {scan.date}
+                      {new Date(scan.scanned_at).toLocaleString()}
                     </td>
 
                     {/* PREDICTION */}
                     <td className="p-4">
                       <span
                         className={
-                          scan.prediction === "Phishing"
+                          scan.prediction === "phishing"
                             ? "text-red-600 font-semibold"
                             : "text-black font-semibold"
-                        }>
+                        }
+                      >
                         {scan.prediction}
                       </span>
                     </td>
 
                     {/* SCORE */}
                     <td className="p-4 font-semibold text-black">
-                      {scan.score}
+                      {scan.confidence !== null
+                        ? scan.confidence
+                        : "--"}
                     </td>
 
                     {/* VIEW REPORT */}
                     <td className="p-4">
-                      <button onClick={() =>router.push(`/scan/result?id=${scan.id}`)}
-                        className="text-red-600 font-semibold">
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/scan/result?url=${encodeURIComponent(
+                              scan.url
+                            )}&prediction=${encodeURIComponent(
+                              scan.prediction
+                            )}`
+                          )
+                        }
+                        className="text-red-600 font-semibold"
+                      >
                         View Report
                       </button>
                     </td>
+
                   </tr>
                 ))
               )}
             </tbody>
+
           </table>
         </div>
+
       </main>
     </div>
   );
-
 }

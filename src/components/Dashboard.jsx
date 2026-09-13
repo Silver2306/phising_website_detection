@@ -13,7 +13,9 @@ import {
 
 import { LiaFishSolid } from "react-icons/lia";
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user,
+  totalScans,
+  threatsBlocked,  }) {
   const router = useRouter();
 
   const [url, setUrl] = useState("");
@@ -236,7 +238,7 @@ export default function Dashboard({ user }) {
               {/* Total Scans */}
               <div className="mt-6">
 
-                <p className="text-3xl font-bold text-black">0</p>
+                <p className="text-3xl font-bold text-black">{totalScans}</p>
 
                 <p className="text-sm text-gray-500 mt-1">Total Scans Executed</p>
 
@@ -245,7 +247,7 @@ export default function Dashboard({ user }) {
               {/* Threats */}
               <div className="mt-6">
 
-                <p className="text-3xl font-bold text-red-600">0</p>
+                <p className="text-3xl font-bold text-red-600">{threatsBlocked}</p>
 
                 <p className="text-sm text-gray-500 mt-1">
                   Phishing Threats Blocked
