@@ -1,15 +1,16 @@
 from flask import Flask
+from dotenv import load_dotenv
 
+load_dotenv()
 from routes.health import health_bp
-from routes.predict import predict_bp
 from routes.scan import scan_bp
 from flask_cors import CORS
+from services.rdap_service import get_rdap_info
 
 app = Flask(__name__)
 CORS(app)
 
 app.register_blueprint(health_bp)
-app.register_blueprint(predict_bp)
 app.register_blueprint(scan_bp)
 
 
