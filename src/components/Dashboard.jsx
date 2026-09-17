@@ -13,11 +13,14 @@ import {
 
 import { LiaFishSolid } from "react-icons/lia";
 
-export default function Dashboard({ user }) {
+export default function Dashboard({ user,
+  totalScans,
+  threatsBlocked,  }) {
   const router = useRouter();
 
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
+  const [isScanning, setIsScanning] = useState(false);
 
   // Get logged-in user's name
   const name =
@@ -45,36 +48,50 @@ export default function Dashboard({ user }) {
   }
 
   // URL form
-  function handleScan(e) {
+  async function handleScan(e) {
     e.preventDefault();
 
-    if (!url.trim()) {
+    const finalUrl = url.trim();
+
+    if (!finalUrl) {
       setMessage("Please enter a URL.");
       return;
     }
 
-    let finalUrl = url.trim();
-
-    // Add https:// if user doesn't type it
-    if (
-      !finalUrl.startsWith("http://") &&
-      !finalUrl.startsWith("https://")
-    ) {
-      finalUrl = "https://" + finalUrl;
-    }
-
-    // Check URL
     try {
-      new URL(finalUrl);
-    } catch {
-      setMessage("Please enter a valid URL.");
-      return;
+      setIsScanning(true);
+      setMessage("Scanning...");
+
+      const response = await fetch(
+        "/api/scan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            url: finalUrl,
+          }),
+        }
+      );
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(result.error || "Scan failed.");
+        return;
+      }
+
+      // Redirect to results page
+      router.push(
+        `/scan/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
+      );
+
+    } catch (error) {
+      setMessage("Could not connect to the scanning service.");
+      console.error(error);
+    } finally {
+      setIsScanning(false);
     }
-
-    setUrl(finalUrl);
-    setMessage("URL is ready to scan.");
-
-    // Flask API connection will be added here later
   }
 
   return (
@@ -86,7 +103,7 @@ export default function Dashboard({ user }) {
 
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <LiaFishSolid  className="text-red-600 text-2xl"/>
+            <LiaFishSolid className="text-red-600 text-2xl" />
             <h1 className="font-semibold text-black text-lg">PhisSafe Dashboard</h1>
           </div>
 
@@ -104,7 +121,7 @@ export default function Dashboard({ user }) {
 
             {/* Logout */}
             <button
-              onClick={handleLogout} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
+              onClick={handleLogout} disabled={isScanning} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
               <FaRightFromBracket />
               <span className="hidden sm:block">Logout</span>
             </button>
@@ -147,14 +164,15 @@ export default function Dashboard({ user }) {
                       onChange={(e) => {
                         setUrl(e.target.value);
                         setMessage("");
-                      }}/>
+                      }} />
 
                   </div>
 
                   {/* Scan Button */}
-                  <button type="submit"
+                  <button type="submit" disabled={isScanning}
                     className="h-12 bg-red-600 hover:bg-red-700 text-white px-6 rounded-lg font-semibold flex justify-center items-center gap-2">
-                    <FaMicroscope />Initiate Scan
+                    {isScanning ? "" : <FaMicroscope />}
+                    {isScanning ? "Scanning..." : "Initiate Scan"}
                   </button>
 
                 </div>
@@ -220,7 +238,7 @@ export default function Dashboard({ user }) {
               {/* Total Scans */}
               <div className="mt-6">
 
-                <p className="text-3xl font-bold text-black">0</p>
+                <p className="text-3xl font-bold text-black">{totalScans}</p>
 
                 <p className="text-sm text-gray-500 mt-1">Total Scans Executed</p>
 
@@ -229,7 +247,7 @@ export default function Dashboard({ user }) {
               {/* Threats */}
               <div className="mt-6">
 
-                <p className="text-3xl font-bold text-red-600">0</p>
+                <p className="text-3xl font-bold text-red-600">{threatsBlocked}</p>
 
                 <p className="text-sm text-gray-500 mt-1">
                   Phishing Threats Blocked
@@ -240,7 +258,9 @@ export default function Dashboard({ user }) {
               <hr className="my-6" />
 
               {/* History */}
-              <button className="w-full border rounded-lg py-3 text-gray-500">View Full History</button>
+              <button onClick={() => router.push("/history")} className="w-full border rounded-lg py-3 text-gray-500 hover:text-red-600">
+                View Full History
+              </button>
 
             </div>
 

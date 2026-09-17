@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+
 import { createClient } from "../../lib/supabase/server";
+
 import Dashboard from "../../components/Dashboard";
 
 export default async function DashboardPage() {
@@ -9,12 +11,47 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  {/*CHECKS IF USER IS LOGGED IN OR NOT*/}
+  // Not logged in
   if (!user) {
     redirect("/");
   }
 
-  {/*PASSING USER*/}
-  return <Dashboard user={user} />;
-}
+  // Get user's role
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
 
+  // Admin goes to admin dashboard
+  if (profile?.role === "admin") {
+    redirect("/admin");
+  }
+
+  // Total scans
+  const { count: totalScans } = await supabase
+    .from("scans")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("user_id", user.id);
+
+  // Phishing scans
+  const { count: threatsBlocked } = await supabase
+    .from("scans")
+    .select("*", {
+      count: "exact",
+      head: true,
+    })
+    .eq("user_id", user.id)
+    .eq("prediction", "phishing");
+
+  return (
+    <Dashboard
+      user={user}
+      totalScans={totalScans ?? 0}
+      threatsBlocked={threatsBlocked ?? 0}
+    />
+  );
+}
