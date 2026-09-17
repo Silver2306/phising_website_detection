@@ -2,10 +2,13 @@ from flask import Blueprint, request, jsonify
 from urllib.parse import urlparse
 
 from services.feature_extractor import extract_basic_features
-from services.model_service import model, features
+from services.feature_extractor import extract_url_features
+
+from services.model_service import predict_url
 from services.rdap_service import get_rdap_info
 
 import pandas as pd
+
 scan_bp = Blueprint("scan", __name__)
 
 
@@ -31,16 +34,18 @@ def scan():
             "error": "Invalid URL"
         }), 400
 
-    extracted_features = extract_basic_features(url)
+    extracted_features = extract_url_features(url)
 
     #Send features as a dataframe, or else an error occurs, not sure if its the root cause tho, multiple patches applied
-    input_data = pd.DataFrame(
-        [[extracted_features[feature] for feature in features]],
-        columns=features
-    )
+    #input_data = pd.DataFrame(
+     #   [[extracted_features[feature] for feature in features]],
+      #  columns=features
+    #)
 
-    prediction = model.predict(input_data)
-    probabilities = model.predict_proba(input_data)
+    #prediction = model.predict(input_data)
+    #probabilities = model.predict_proba(input_data)
+
+    prediction = predict_url(extracted_features)    #with the extracted features
 
     rdap_info = get_rdap_info(url)
 

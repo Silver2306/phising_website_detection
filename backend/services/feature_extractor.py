@@ -4,7 +4,43 @@ import requests
 from bs4 import BeautifulSoup
 import unicodedata
 
+# i am adding this function for url only model, this has the exact same code as the below function but only contains url feature extraction
+def extract_url_features(url):
 
+    parsed = urlparse(url)
+
+    # is_https
+    is_https = 1 if parsed.scheme == "https" else 0
+
+    # no_of_special_chars
+    no_of_other_special_chars_in_url = sum(
+        not c.isalnum() for c in url
+    )
+
+    # url_length
+    url_length = len(url)
+    no_of_letters = sum(c.isalpha() for c in url)
+    letter_ratio_in_url = no_of_letters / url_length
+
+    # no_of_digits
+    no_of_digits = sum(c.isdigit() for c in url)
+    digit_ratio_in_url = no_of_digits / url_length
+
+    # no_of_special_chars
+    no_of_special_chars = sum(
+        not c.isalnum() for c in url
+    )
+    special_char_ratio_in_url = (
+        no_of_special_chars / url_length
+    )
+
+    return {
+        "IsHTTPS": is_https,
+        "NoOfOtherSpecialCharsInURL": no_of_other_special_chars_in_url,
+        "LetterRatioInURL": letter_ratio_in_url,
+        "DegitRatioInURL": digit_ratio_in_url,
+        "SpecialCharRatioInURL": special_char_ratio_in_url
+    }
 
 def extract_basic_features(url):
 
