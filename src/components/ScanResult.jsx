@@ -13,8 +13,40 @@ export default function ScanResult({ isGuest = false }) {
   const prediction = searchParams.get("prediction");
   // isGuest is passed as a prop by the parent page — not read from the URL.
   const score = "--";
-  const indicators = [];
   const isPhishing = prediction === "phishing";
+
+  const domainInfo = searchParams.get("domain_info")
+    ? JSON.parse(searchParams.get("domain_info"))
+    : null;
+
+  const indicators = domainInfo
+    ? [
+      {
+        name: "Domain Age",
+        meaning: `${domainInfo.domain_age_days} days`,
+        impact: domainInfo.domain_age_message,
+      },
+      {
+        name: "Registration Date",
+        meaning: domainInfo.creation_date
+          ? new Date(domainInfo.creation_date).toLocaleDateString()
+          : "Unavailable",
+        impact: "Domain creation date",
+      },
+      {
+        name: "Expiration Date",
+        meaning: domainInfo.expiration_date
+          ? new Date(domainInfo.expiration_date).toLocaleDateString()
+          : "Unavailable",
+        impact: "Registration expiry",
+      },
+      {
+        name: "Registrar",
+        meaning: domainInfo.registrar || "Unavailable",
+        impact: "Domain registrar",
+      },
+    ]
+    : [];
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -94,21 +126,19 @@ export default function ScanResult({ isGuest = false }) {
                 </tr>
               </thead>
               <tbody>
-
                 {indicators.length === 0 ? (
                   <tr>
-                    {/*FLASK NEEDED FIZZA*/}
-                    <td colSpan="3" className="p-6 text-center text-gray-500">Threat indicators FLASK NOT CONNECTED</td>
+                    <td colSpan="3" className="p-6 text-center text-gray-500">
+                      Domain information unavailable
+                    </td>
                   </tr>
                 ) : (
                   indicators.map((indicator, index) => (
-
                     <tr key={index} className="border-b">
-                      <td className="p-4">{indicator.name}</td>
+                      <td className="p-4 font-medium">{indicator.name}</td>
                       <td className="p-4">{indicator.meaning}</td>
-                      <td className="p-4 text-red-600 font-semibold">{indicator.impact}</td>
+                      <td className="p-4 font-semibold">{indicator.impact}</td>
                     </tr>
-
                   ))
                 )}
               </tbody>

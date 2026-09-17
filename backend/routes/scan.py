@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 from services.feature_extractor import extract_basic_features
 from services.model_service import model, features
+from services.rdap_service import get_rdap_info
 
 import pandas as pd
 scan_bp = Blueprint("scan", __name__)
@@ -32,23 +33,16 @@ def scan():
 
     extracted_features = extract_basic_features(url)
 
-    # Arrange features in the exact order
-    # expected by the trained model
-    input_features = [
-        extracted_features[feature]
-        for feature in features
-    ]
-
     #Send features as a dataframe, or else an error occurs, not sure if its the root cause tho, multiple patches applied
     input_data = pd.DataFrame(
         [[extracted_features[feature] for feature in features]],
         columns=features
     )
-    
 
     prediction = model.predict(input_data)
     probabilities = model.predict_proba(input_data)
 
+    rdap_info = get_rdap_info(url)
 
     if prediction[0] == 0:
         result = "phishing"
@@ -58,5 +52,6 @@ def scan():
     return jsonify({
         "url": url,
         "features": extracted_features,
-        "prediction": result
+        "prediction": result,
+        "domain_info": rdap_info
     })
