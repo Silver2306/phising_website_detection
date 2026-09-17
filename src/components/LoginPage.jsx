@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { createClient } from "../lib/supabase/client";
 import Link from "next/link";
 
-import { FaLock } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { RiLockPasswordLine } from 'react-icons/ri';
+import { LiaFishSolid } from "react-icons/lia";
 
 function IconButton({ children, text, iconColor }) {
   return (
@@ -92,7 +92,7 @@ export default function LoginPage() {
           {/* MAIN FORM CONTAIN IS HERE */}
 
           <div className='logo flex justify-left gap-x-1 items-center'>
-            <FaLock className='text-red-600 text-2xl' />
+            <LiaFishSolid className="text-red-600 text-2xl" />
             <span>PhisSafe</span>
           </div>
 
@@ -127,10 +127,6 @@ export default function LoginPage() {
           
 
           <div className='flex justify-between items-center mt-3'>
-            <div>
-              <input type='checkbox' />
-              <span className='text-neutral-500'> Remember me</span>
-            </div>
             <div className='item text-blue-600'>
               <Link href="/forgot-password">
                 Forgot Password?
@@ -141,7 +137,7 @@ export default function LoginPage() {
 
 
           <p className='text-center mt-6 text-neutral-500'>Don't have an account?
-            <a href='/register' className='text-blue-500'>Create an acoount</a>
+            <a href='/register' className='text-blue-500'>Create an account</a>
           </p>
 
           {error && (
@@ -158,7 +154,7 @@ export default function LoginPage() {
           </button>
 
           <div className="text-center mt-4">
-            <Link href="/guest" className="text-sm text-gray-400 hover:text-gray-600 underline underline-offset-2">
+            <Link href="/guest" className="text-sm text-gray-400 hover:text-gray-700 underline underline-offset-2">
               Continue as Guest
             </Link>
           </div>
