@@ -1,168 +1,241 @@
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
+import ipaddress
+import requests
+from bs4 import BeautifulSoup
+import unicodedata
 
-
-def char_continuation_rate(url):
-    ln = len(url)
-
-    if ln == 0:
-        return 0
-
-    chC, nmC, spC = 0, 0, 0
-    maxCh, maxNm, maxSp = 0, 0, 0
-
-    for i in range(ln):
-        ch = url[i]
-
-        if ch.isalpha():
-            chC += 1
-
-            if nmC > 0:
-                if maxNm < nmC:
-                    maxNm = nmC
-                    nmC = 0
-
-            elif spC > 0:
-                if maxSp < spC:
-                    maxSp = spC
-                    spC = 0
-
-            nmC, spC = 0, 0
-
-        elif ch.isdigit():
-            nmC += 1
-
-            if chC > 0:
-                if maxCh < chC:
-                    maxCh = chC
-                    chC = 0
-
-            elif spC > 0:
-                if maxSp < spC:
-                    maxSp = spC
-                    spC = 0
-
-            chC, spC = 0, 0
-
-        else:
-            spC += 1
-
-            if nmC > 0:
-                if maxNm < nmC:
-                    maxNm = nmC
-                    nmC = 0
-
-            elif chC > 0:
-                if maxCh < chC:
-                    maxCh = chC
-                    chC = 0
-
-            nmC, chC = 0, 0
-
-    if maxCh < chC:
-        maxCh = chC
-
-    if maxNm < nmC:
-        maxNm = nmC
-
-    if maxSp < spC:
-        maxSp = spC
-
-    return (maxCh + maxNm + maxSp) / ln
 
 
 def extract_basic_features(url):
 
+    response = requests.get(url, timeout=10)
+
+    html = response.text
+
+    #beautifulsoup4
+    soup = BeautifulSoup(html, "html.parser")
+
     parsed = urlparse(url)
+    domain = parsed.hostname
 
-    domain = parsed.netloc
+    # is_https
+    is_https = 1 if parsed.scheme == "https" else 0
 
-    # Remove port if present
-    if ":" in domain:
-        domain = domain.split(":")[0]
+    # no_of_special_chars    
+    no_of_other_special_chars_in_url = sum(not c.isalnum() for c in url)
 
-    # Feature 1: IsHTTPS
-    is_https = 1 if parsed.scheme.lower() == "https" else 0
+    # url_length
+    url_length = len(url)
+    no_of_letters = sum(c.isalpha() for c in url)
+    letter_ratio_in_url = no_of_letters / url_length
 
-    # Feature 2: DomainLength
-    domain_length = len(domain)
+    # no_of_digits
+    no_of_digits = sum(c.isdigit() for c in url)
+    digit_ratio_in_url = no_of_digits / url_length
 
-    # Feature 3: NoOfSubDomain
-    domain_parts = domain.split(".")
+    # no_of_special_chars
+    no_of_special_chars = sum(not c.isalnum() for c in url)
+    special_char_ratio_in_url = no_of_special_chars / url_length
 
-    if len(domain_parts) >= 2:
-        no_of_subdomains = len(domain_parts) - 2
-    else:
-        no_of_subdomains = 0
+    #no_of_external_ref
+    no_of_external_ref = 0
 
-    # Prepare URL for character-based features
-    normalized_url = url.rstrip("/")
-    url_without_protocol = normalized_url.split("://", 1)[-1]
+    current_domain = domain.lower()
 
-    if url_without_protocol.startswith("www."):
-        url_for_counting = url_without_protocol[4:-1]
-        ratio_length = len(normalized_url) - 1
-    else:
-        url_for_counting = url_without_protocol
-        ratio_length = len(normalized_url)
+    if current_domain.startswith("www."):
+        current_domain = current_domain[4:]
 
-    no_of_letters = sum(
-        char.isalpha()
-        for char in url_for_counting
-    )
+    for link in soup.find_all("a", href=True):
 
-    no_of_digits = sum(
-        char.isdigit()
-        for char in url_for_counting
-    )
+        href = link.get("href", "").strip()
 
-    special_chars = sum(
-        not char.isalnum()
-    for char in url_for_counting
-)
+        if not href:
+            continue
 
-    # Feature 4: LetterRatioInURL
-    letter_ratio = round(
-    no_of_letters / ratio_length,
-    3
-    )
+        # Convert relative URL into an absolute URL
+        absolute_url = urljoin(url, href)
+
+        parsed_link = urlparse(absolute_url)
+
+        link_domain = parsed_link.hostname
+
+        if not link_domain:
+            continue
+
+        link_domain = link_domain.lower()
+
+        if link_domain.startswith("www."):
+            link_domain = link_domain[4:]
+
+        if link_domain != current_domain:
+            no_of_external_ref += 1
+
+    # no_of_self_ref
+    no_of_self_ref = 0
+
+    for link in soup.find_all("a", href=True):
+
+        href = link.get("href", "").strip()
+
+        if not href:
+            continue
+
+        # Convert relative URL into an absolute URL
+        absolute_url = urljoin(url, href)
+
+        parsed_link = urlparse(absolute_url)
+
+        link_domain = parsed_link.hostname
+
+        if not link_domain:
+            continue
+
+        link_domain = link_domain.lower()
+
+        if link_domain.startswith("www."):
+            link_domain = link_domain[4:]
+
+        current_domain = domain.lower()
+
+        if current_domain.startswith("www."):
+            current_domain = current_domain[4:]
+
+        if link_domain == current_domain:
+            no_of_self_ref += 1
+
+    # no_of_js
+    scripts = soup.find_all("script")
+    no_of_js = len(scripts)
+    # line_of_code
+    line_of_code = len(html.splitlines())
     
-    # Feature 5: DegitRatioInURL
-    digit_ratio = round(
-        no_of_digits / ratio_length,
-        3
+    # no_of_image
+    images = soup.find_all("img")
+    no_of_image = len(images)
+
+    # largest_line_length
+    largest_line_length = max(len(line) for line in html.splitlines())
+
+    # has_social_net
+    social_domains = {
+        "facebook.com",
+        "instagram.com",
+        "x.com",
+        "twitter.com",
+        "linkedin.com",
+        "youtube.com",
+        "tiktok.com",
+        "pinterest.com",
+        "reddit.com",
+        "snapchat.com",
+        "threads.net",
+        "tumblr.com",
+        "flickr.com",
+        "vk.com",
+        "weibo.com",
+        "wechat.com",
+        "discord.com",
+        "telegram.org",
+        "t.me",
+        "whatsapp.com",
+        "whatsapp.net",
+        "messenger.com",
+        "line.me",
+        "medium.com",
+        "quora.com"
+    }
+    has_social_net = 0
+
+    for link in soup.find_all("a", href=True):
+
+        href = link.get("href", "").strip()
+
+        if not href:
+            continue
+
+        parsed_link = urlparse(href)
+
+        hostname = parsed_link.hostname
+
+        if not hostname:
+            continue
+
+        hostname = hostname.lower()
+
+        if hostname.startswith("www."):
+            hostname = hostname[4:]
+
+        if hostname in social_domains:
+            has_social_net = 1
+            break
+
+    # copyright_info
+    copyright_keywords = [
+        "copyright",
+        "all rights reserved",
+        "©"
+    ]
+
+    page_text = soup.get_text(" ", strip=True).lower()
+
+    has_copyright_info = 0
+
+    for keyword in copyright_keywords:
+        if keyword in page_text:
+            has_copyright_info = 1
+            break
+
+    # has_description
+    description = soup.find("meta", {"name": "description"})
+    has_description = 1 if description else 0
+
+    # domain_title_match_score
+    title = soup.title.get_text(strip=True) if soup.title else ""
+    def TitleMatchScore(Set, Txt):
+        score = 0
+        baseScore = 100 / len(Txt)
+
+        for element in Set:
+            if Txt.find(element) >= 0:
+                n = len(element)
+                score = score + baseScore * n
+                Txt = Txt.replace(element, "")
+
+        if score > 99.9:
+            score = 100
+
+        return score
+    tld = domain.split(".")[-1]
+
+    clean_title = "".join(
+        c for c in title
+        if unicodedata.category(c) != "Cf"
     )
+    tSet = clean_title.lower().split()
+    txtDomain = domain.lower().replace("www.", "").replace("." + tld.lower(), "").replace("/", "")
+    domain_title_match_score = TitleMatchScore(tSet, txtDomain)
+    print("Domain-Title Match Score:", domain_title_match_score)
 
-    # Feature 6: SpacialCharRatioInURL
-    special_char_ratio = round(
-        special_chars / ratio_length,
-        3
-    )
 
-    # Feature 7: CharContinuationRate
-    char_domain = domain
-
-    # Dataset calculation excludes www.
-    if char_domain.startswith("www."):
-        char_domain = char_domain[4:]
-
-    # Dataset calculation excludes final TLD
-    char_domain_parts = char_domain.split(".")
-
-    if len(char_domain_parts) > 1:
-        domain_without_tld = ".".join(char_domain_parts[:-1])
-    else:
-        domain_without_tld = char_domain
-
-    char_cont_rate = char_continuation_rate(
-        domain_without_tld
-    )
+    # url_title_match_score
+    txtURL = url.lower().replace("https://", "").replace("http://", "").replace("www.", "").replace("." + tld, "").replace("/", "")
+    url_title_match_score = TitleMatchScore(tSet, txtURL)
+    print("URL-Title Match Score:", url_title_match_score)
 
     return {
         "IsHTTPS": is_https,
-        "LetterRatioInURL": letter_ratio,
-        "SpacialCharRatioInURL": special_char_ratio,
-        "DegitRatioInURL": digit_ratio,
-        "NoOfSubDomain": no_of_subdomains,
-        "DomainLength": domain_length,
-        "CharContinuationRate": char_cont_rate
+        "NoOfOtherSpecialCharsInURL": no_of_other_special_chars_in_url,
+        "LetterRatioInURL": letter_ratio_in_url,
+        "DegitRatioInURL": digit_ratio_in_url,
+        "SpecialCharRatioInURL": special_char_ratio_in_url,
+        "NoOfExternalRef": no_of_external_ref,
+        "NoOfSelfRef": no_of_self_ref,
+        "NoOfJS": no_of_js,
+        "LineOfCode": line_of_code,
+        "NoOfImage": no_of_image,
+        "LargestLineLength": largest_line_length,
+        "HasSocialNet": has_social_net,
+        "HasCopyrightInfo": has_copyright_info,
+        "HasDescription": has_description,
+        "DomainTitleMatchScore": domain_title_match_score
     }
