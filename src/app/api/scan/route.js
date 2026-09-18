@@ -5,7 +5,7 @@ export async function POST(request) {
     const body = await request.json();
 
     // Call Flask
-    const response = await fetch("http://localhost:5000/scan", {
+    const response = await fetch("http://localhost:5000/scan-cp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
