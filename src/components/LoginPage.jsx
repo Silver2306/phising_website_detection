@@ -84,7 +84,7 @@ export default function LoginPage() {
     w-full h-screen bg-slate-50'>
 
       {/*CONTAINER*/}
-      <div className='form-container overflow-hidden rounded-2xl flex shadow-2xl justify-between w-11/12 max-w-screen-xl'>
+      <div className='form-container overflow-hidden rounded-2xl flex shadow-2xl justify-between w-10/12 max-w-screen-xl'>
 
         {/*Left Side*/}
         <div className='form-section w-1/2 px-24 py-14'>
@@ -92,18 +92,18 @@ export default function LoginPage() {
           {/* MAIN FORM CONTAIN IS HERE */}
 
           <div className='logo flex justify-left gap-x-1 items-center'>
-            <LiaFishSolid className="text-red-600 text-2xl" />
-            <span>PhisSafe</span>
+            <LiaFishSolid className="text-red-600 text-4xl" />
+            <span className="text-2xl font-semibold">PhisSafe</span>
           </div>
 
-          <h1 className='text-3xl font-semibold mt-6 opacity-80 text-black'>
+          <h1 className='text-3xl font-semibold mt-6 opacity-80 text-black pb-6'>
             Log in to your Account
           </h1>
-          <p className='text-black opacity-60 mt-3'>
-            Welcome! Select mothod to login:
-          </p>
+          
+
 
           {/*LOGIN BUTTONS*/}
+          {/*}
           <div className='oath-button flex justify-between gap-x-5 mt-8'>
             <IconButton text='Google' iconColor='#fff'>
               <FcGoogle />
@@ -113,7 +113,7 @@ export default function LoginPage() {
             </IconButton>
           </div>
 
-          <span className='block text-center opacity-70 mt-4 mb-10 text-gray-800'>or continue with email</span>
+          <span className='block text-center opacity-70 mt-4 mb-10 text-gray-800'>or continue with email</span> */}
 
           <form onSubmit={handleLogin}>
 
@@ -126,7 +126,7 @@ export default function LoginPage() {
             </IconInput>
           
 
-          <div className='flex justify-between items-center mt-3'>
+          <div className='flex justify-between items-center mt-5'>
             <div className='item text-blue-600'>
               <Link href="/forgot-password">
                 Forgot Password?
@@ -136,7 +136,7 @@ export default function LoginPage() {
 
 
 
-          <p className='text-center mt-6 text-neutral-500'>Don't have an account?
+          <p className='text-center mt-3 text-neutral-500'>Don't have an account?
             <a href='/register' className='text-blue-500'>Create an account</a>
           </p>
 
@@ -146,17 +146,22 @@ export default function LoginPage() {
             </p>
           )}
 
+          <div className="text-center mt-3">
           <button
             type="submit"
             disabled={loading}
             className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white w-full py-4 rounded mt-5 text-xl">
             {loading ? "Logging in..." : "Login"}
           </button>
+          </div>
 
-          <div className="text-center mt-4">
-            <Link href="/guest" className="text-sm text-gray-400 hover:text-gray-700 underline underline-offset-2">
+          <div className="text-center mt-4 pt-5">
+            <button
+              type="button"
+              onClick={() => router.push("/guest")}
+              className="px-5 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-600 transition">
               Continue as Guest
-            </Link>
+            </button>
           </div>
 
         </form>
