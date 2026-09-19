@@ -50,9 +50,7 @@ export default function GuestDashboard() {
       }
 
       // Navigate to the dedicated guest result route.
-      router.push(
-        `/guest/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
-      );
+      router.push(`/guest/${result.id}`);
     } catch (error) {
       setMessage("Could not connect to the scanning service.");
       console.error(error);

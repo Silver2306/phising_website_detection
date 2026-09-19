@@ -34,25 +34,31 @@ export async function POST(request) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // Save only for logged-in users
-    if (user) {
-      const { error } = await supabase
-        .from("scans")
-        .insert({
-          user_id: user.id,
-          url: body.url,
-          prediction: data.prediction,
-          confidence: data.confidence ?? null,
-          model_version: data.model_version ?? null,
-        });
+    // Save for both logged-in users and guests
+    const { data: insertedData, error } = await supabase
+      .from("scans")
+      .insert({
+        user_id: user ? user.id : null,
+        url: body.url,
+        prediction: data.prediction,
+        confidence: data.confidence ?? null,
+        model_version: data.model_version ?? null,
+        domain_info: data.domain_info ?? null,
+      })
+      .select()
+      .single();
 
-      // Scan should still work even if DB insert fails
-      if (error) {
-        console.error("Could not save scan:", error);
-      }
+    if (error) {
+      console.error("Could not save scan:", error);
     }
 
-    return Response.json(data, {
+    // Include the scan ID in the response so the frontend can redirect to it
+    const responseData = {
+      ...data,
+      id: insertedData?.id || null,
+    };
+
+    return Response.json(responseData, {
       status: 200,
     });
 

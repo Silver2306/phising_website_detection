@@ -1,23 +1,14 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
 
-export default function ScanResult({ isGuest = false }) {
+export default function ScanResult({ isGuest = false, url, prediction, domainInfo, score = "--" }) {
 
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const url = searchParams.get("url");
-  const prediction = searchParams.get("prediction");
-  // isGuest is passed as a prop by the parent page — not read from the URL.
-  const score = "--";
   const isPhishing = prediction === "phishing";
-
-  const domainInfo = searchParams.get("domain_info")
-    ? JSON.parse(searchParams.get("domain_info"))
-    : null;
 
   const indicators = domainInfo
     ? [

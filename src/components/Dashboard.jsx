@@ -82,9 +82,7 @@ export default function Dashboard({ user,
       }
 
       // Redirect to results page
-      router.push(
-        `/scan/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
-      );
+      router.push(`/scan/${result.id}`);
 
     } catch (error) {
       setMessage("Could not connect to the scanning service.");
