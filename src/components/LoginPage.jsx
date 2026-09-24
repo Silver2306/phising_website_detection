@@ -84,10 +84,10 @@ export default function LoginPage() {
     w-full h-screen bg-slate-50'>
 
       {/*CONTAINER*/}
-      <div className='form-container overflow-hidden rounded-2xl flex shadow-2xl justify-between w-10/12 max-w-screen-xl'>
+      <div className='form-container overflow-hidden rounded-2xl flex flex-col lg:flex-row shadow-2xl justify-between w-10/12 max-w-screen-xl'>
 
         {/*Left Side*/}
-        <div className='form-section w-1/2 px-24 py-14'>
+        <div className='form-section w-full lg:w-1/2 px-24 py-14'>
 
           {/* MAIN FORM CONTAIN IS HERE */}
 
@@ -169,7 +169,7 @@ export default function LoginPage() {
         </div>
 
         {/*Rigth Side*/}
-        <div className='illustration-section w-1/2 bg-red-700'>
+        <div className='illustration-section hidden lg:block lg:w-1/2 bg-red-700'>
           {/*Illustration part wrap*/}
           <div className='illu-wrap'>
             <img src="/assets/illu-main.png" alt='' />

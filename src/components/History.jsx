@@ -71,8 +71,8 @@ export default function History({ scans }) {
         </div>
 
         {/* HISTORY TABLE */}
-        <div className="bg-white border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white border rounded-xl overflow-x-auto">
+          <table className="w-full min-w-[700px] text-sm">
 
             {/* TABLE HEADER */}
             <thead className="bg-gray-50 border-b">

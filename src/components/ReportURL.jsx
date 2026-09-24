@@ -83,7 +83,7 @@ export default function ReportURL({ url, user }) {
         </div>
 
         {/* REPORT FORM */}
-        <div className="bg-white border rounded-xl p-8 max-w-3xl">
+        <div className="bg-white border rounded-xl p-5 sm:p-8 max-w-3xl">
           <form onSubmit={handleSubmit}>
             {/* URL */}
             <div className="mb-6">

@@ -54,7 +54,7 @@ export default function ScanResult({ isGuest = false, url, prediction, domainInf
         )}
 
         {/* Top Section */}
-        <div className="flex justify-between items-start mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
 
           <div>
 
@@ -74,7 +74,7 @@ export default function ScanResult({ isGuest = false, url, prediction, domainInf
         </div>
 
         {/* Result Banner */}
-        <div className="bg-red-700 text-white rounded-xl p-6 mb-6 flex justify-between items-center">
+        <div className="bg-red-700 text-white rounded-xl p-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
 
             <div className="flex items-center gap-3">
@@ -96,17 +96,17 @@ export default function ScanResult({ isGuest = false, url, prediction, domainInf
 
 
         {/* Main Content */}
-        <div className="grid grid-cols-[1fr_300px] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
 
           {/* Threat Indicators */}
-          <div className="bg-white border rounded-xl">
+          <div className="bg-white border rounded-xl overflow-x-auto">
             <div className="p-6">
               <h2 className="text-lg font-bold text-black">Extracted Threat Indicators</h2>
 
             </div>
 
             {/* Table */}
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[600px] text-sm">
               <thead className="border-t border-b bg-gray-50">
                 <tr>
                   <th className="text-left p-4 text-gray-500">Feature Category</th>
