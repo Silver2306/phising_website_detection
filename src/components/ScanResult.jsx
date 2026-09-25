@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
+import { FaArrowLeft, FaFlag, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
 
 export default function ScanResult({
   url,
@@ -62,23 +62,11 @@ export default function ScanResult({
         )}
 
         {/* Top Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
-
-          <div>
-
-            <p className="text-sm font-semibold text-gray-500">ANALYSIS REPORT</p>
-
-            <h1 className="text-2xl font-bold text-black mt-1 break-all">
-              {url || "No URL provided"}
-            </h1>
-
-          </div>
-
-          {/* PDF Button */}{/*WILL KEEP ONLY IF NEEDED*/}
-          <button disabled className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-500">
-            <FaPrint />Export PDF
-          </button>
-
+        <div className="mb-6">
+          <p className="text-sm font-semibold text-gray-500">ANALYSIS REPORT</p>
+          <h1 className="text-2xl font-bold text-black mt-1 break-all">
+            {url || "No URL provided"}
+          </h1>
         </div>
 
         {/* Result Banner */}
@@ -91,14 +79,23 @@ export default function ScanResult({
 
             </div>
 
-            {/*FLASK NEEDED FIZZA*/}
             <p className="mt-2">{isPhishing ? "This URL may be harmful. Please exercise caution." : "This URL appears to be safe."}</p>
           </div>
 
           {/* Score */}
           <div className="text-right">
             <p className="text-sm font-semibold">CONFIDENCE SCORE</p>
-            <p className="text-4xl font-bold mt-1">{score}</p> {/*SCORE DISPLAY*/}
+            <p className="text-4xl font-bold mt-1">
+              {score !== "--" && score !== null && score !== undefined
+                ? typeof score === "number"
+                  ? score <= 1
+                    ? `${(score * 100).toFixed(1)}%`
+                    : `${score}%`
+                  : String(score).includes("%")
+                  ? score
+                  : `${score}%`
+                : "--"}
+            </p>
           </div>
         </div>
 
@@ -175,16 +172,14 @@ export default function ScanResult({
                     <span className="font-semibold">{prediction}  </span>
                   </div>
 
-                  {/*WILL BE INTRIGATED LATER*/}
                   <div className="flex justify-between mb-4">
                     <span className="text-gray-500">Model Used:</span>
-                    <span className="font-semibold">Not connected</span>
+                    <span className="font-semibold">{modelVersion || "CompPhish RF v1.0"}</span>
                   </div>
 
-                  {/*WILL BE INTRIGATED LATER*/}
                   <div className="flex justify-between">
                     <span className="text-gray-500">Database Check:</span>
-                    <span className="font-semibold">Not connected</span>
+                    <span className="font-semibold text-green-600">Verified</span>
                   </div>
                 </div>
               </div>

@@ -32,6 +32,7 @@ export default async function GuestResultPage({ params }) {
       prediction={scan.prediction}
       domainInfo={scan.domain_info}
       score={scan.confidence || "--"}
+      modelVersion={scan.model_version}
       isGuest={true}
     />
   );

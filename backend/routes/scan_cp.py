@@ -47,7 +47,7 @@ def scan_cp():
         html = response.text
 
         # Predict using CompPhish model
-        prediction = predict_url(
+        scan_result = predict_url(
             url,
             html
         )
@@ -57,7 +57,9 @@ def scan_cp():
 
         return jsonify({
             "url": url,
-            "prediction": prediction,
+            "prediction": scan_result["prediction"],
+            "confidence": scan_result["confidence"],
+            "model_version": scan_result["model_version"],
             "domain_info": rdap_info
         })
 

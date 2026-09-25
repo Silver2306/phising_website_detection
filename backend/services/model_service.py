@@ -46,17 +46,25 @@ def predict_url(url, html):
     input_data = pd.DataFrame( [[extracted[feature] for feature in SELECTED_FEATURES]], columns=SELECTED_FEATURES ) 
      
      # Make prediction
-    prediction = model.predict(input_data)[0] 
+    prediction_cls = int(model.predict(input_data)[0]) 
     
     # Get probability 
     probability = model.predict_proba(input_data)[0] 
-    print("Extracted Features:") 
-    print(extracted) 
-    print("Prediction:", prediction) 
+    confidence_val = float(probability[prediction_cls])
+    confidence_score = round(confidence_val, 4)
+
+    print("Extracted Features:", extracted) 
+    print("Prediction:", prediction_cls) 
     print("Probabilities:", probability) 
-    # CompPhish labels: # 0 = Legitimate # 1 = Phishing 
-    if prediction == 1:
-        return "phishing"
-    return "legitimate"
+    
+    # CompPhish labels: 0 = Legitimate, 1 = Phishing 
+    prediction_str = "phishing" if prediction_cls == 1 else "legitimate"
+
+    return {
+        "prediction": prediction_str,
+        "confidence": confidence_score,
+        "model_version": "CompPhish RF v1.0",
+        "extracted_features": extracted
+    }
 
 

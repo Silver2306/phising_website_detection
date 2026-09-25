@@ -1,0 +1,8 @@
+flask
+python-dotenv
+flask-cors
+scikit-learn
+joblib
+requests
+tldextract
+beautifulsoup4

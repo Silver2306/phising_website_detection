@@ -131,10 +131,10 @@ export default function Admin({ user, reports }) {
         {/* BACK TO DASHBOARD */}
         <button
           onClick={() => router.push("/dashboard")}
-          className="flex items-center gap-2 text-gray-600 hover:text-red-600 mb-6 text-2xl font-bold"
+          className="border rounded-lg px-4 py-2 flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600 mb-6 bg-white shadow-sm"
         >
           <FaArrowLeft />
-          Back to Dashboard
+          Dashboard
         </button>
 
         {/* PAGE TITLE */}

@@ -58,9 +58,9 @@ export default function ReportURL({ url, user }) {
     "Report submitted successfully. Thank you!"
   );
 
-  // Optional: clear form after success
+  // Clear form after success
   setReportUrl("");
-  setCategory("");
+  setCategory("Known Malicious");
   setContext("");
 }
 

@@ -9,6 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { LiaFishSolid } from "react-icons/lia";
+import { FaUserSecret } from "react-icons/fa6";
 
 function IconButton({ children, text, iconColor }) {
   return (
@@ -87,7 +88,7 @@ export default function LoginPage() {
       <div className='form-container overflow-hidden rounded-2xl flex flex-col lg:flex-row shadow-2xl justify-between w-10/12 max-w-screen-xl'>
 
         {/*Left Side*/}
-        <div className='form-section w-full lg:w-1/2 px-24 py-14'>
+        <div className='form-section w-full lg:w-1/2 px-8 sm:px-12 lg:px-16 py-10 sm:py-14'>
 
           {/* MAIN FORM CONTAIN IS HERE */}
 
@@ -136,33 +137,45 @@ export default function LoginPage() {
 
 
 
-          <p className='text-center mt-3 text-neutral-500'>Don't have an account?
-            <a href='/register' className='text-blue-500'>Create an account</a>
+          <p className="text-center mt-4 text-sm text-gray-500">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-red-600 font-semibold hover:underline">
+              Create an account
+            </Link>
           </p>
 
           {error && (
-            <p className="text-red-600 text-sm mt-3">
-            {error}
-            </p>
+            <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mt-3">
+              {error}
+            </div>
           )}
 
-          <div className="text-center mt-3">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white w-full py-4 rounded mt-5 text-xl">
-            {loading ? "Logging in..." : "Login"}
-          </button>
-          </div>
-
-          <div className="text-center mt-4 pt-5">
+          <div className="mt-5">
             <button
-              type="button"
-              onClick={() => router.push("/guest")}
-              className="px-5 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-600 transition">
-              Continue as Guest
+              type="submit"
+              disabled={loading}
+              className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-semibold w-full py-3.5 rounded-lg text-lg transition shadow-md"
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
+
+          {/* DIVIDER */}
+          <div className="flex items-center my-5">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="px-3 text-xs text-gray-400 font-semibold tracking-wider uppercase">Or</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          {/* GUEST BUTTON */}
+          <button
+            type="button"
+            onClick={() => router.push("/guest")}
+            className="w-full py-3 border border-gray-300 hover:border-red-600 hover:text-red-600 text-gray-700 font-semibold rounded-lg flex items-center justify-center gap-2 transition bg-white shadow-sm"
+          >
+            <FaUserSecret className="text-gray-500 text-lg" />
+            Continue as Guest
+          </button>
 
         </form>
         
