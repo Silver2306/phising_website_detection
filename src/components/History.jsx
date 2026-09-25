@@ -157,16 +157,8 @@ export default function History({ scans }) {
                     <td className="p-4">
                       <button
                         onClick={() =>
-                          router.push(
-                            `/scan/result?url=${encodeURIComponent(
-                              scan.url
-                            )}&prediction=${encodeURIComponent(
-                              scan.prediction
-                            )}`
-                          )
-                        }
-                        className="text-red-600 font-semibold"
-                      >
+                        router.push(`/scan/result?id=${scan.id}`)}
+                        className="text-red-600 font-semibold">
                         View Report
                       </button>
                     </td>

@@ -13,9 +13,12 @@ import {
 
 import { LiaFishSolid } from "react-icons/lia";
 
-export default function Dashboard({ user,
+export default function Dashboard({
+  user,
   totalScans,
-  threatsBlocked,  }) {
+  threatsBlocked,
+  isAdmin,
+}) {
   const router = useRouter();
 
   const [url, setUrl] = useState("");
@@ -107,23 +110,34 @@ export default function Dashboard({ user,
 
           {/* Logged-in User */}
           <div className="flex items-center gap-4">
+          <div className="hidden sm:block text-right">
+          <p className="text-sm font-semibold text-black">
+            {name}
+          </p>
 
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-semibold text-black">{name}</p>
+          <p className="text-xs text-gray-500">{user.email}</p>
+          </div>
 
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
+          <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold">
+            {initials}
+          </div>
 
-            {/* User Initials */}
-            <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold">{initials}</div>
-
-            {/* Logout */}
+          {isAdmin && (
             <button
-              onClick={handleLogout} disabled={isScanning} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
-              <FaRightFromBracket />
-              <span className="hidden sm:block">Logout</span>
+            onClick={() => router.push("/admin")}
+            className="border border-red-600 text-red-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-50">Admin Panel
             </button>
+          )}
 
+          <button
+            onClick={handleLogout}
+            disabled={isScanning}
+            className="flex items-center gap-2 text-gray-600 hover:text-red-600">
+            <FaRightFromBracket />
+            <span className="hidden sm:block">
+              Logout
+            </span>
+          </button>
           </div>
         </div>
       </header>

@@ -4,7 +4,15 @@ import { useRouter } from "next/navigation";
 
 import { FaArrowLeft, FaFlag, FaPrint, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
 
-export default function ScanResult({ isGuest = false, url, prediction, domainInfo, score = "--" }) {
+export default function ScanResult({
+  url,
+  prediction,
+  domainInfo,
+  score = "--",
+  modelVersion,
+  scannedAt,
+  isGuest = false,
+}) {
 
   const router = useRouter();
 

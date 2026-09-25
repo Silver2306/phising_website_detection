@@ -2,9 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { createClient } from "../../../lib/supabase/server";
 import ScanResult from "../../../components/ScanResult";
 
-// Authenticated users only. Guests have their own route at /guest/[id].
 export default async function ScanResultPage({ params }) {
-
   const supabase = await createClient();
 
   const {
@@ -25,6 +23,7 @@ export default async function ScanResultPage({ params }) {
     .from("scans")
     .select("*")
     .eq("id", id)
+    .eq("user_id", user.id)
     .single();
 
   if (!scan) {
@@ -37,6 +36,8 @@ export default async function ScanResultPage({ params }) {
       prediction={scan.prediction}
       domainInfo={scan.domain_info}
       score={scan.confidence || "--"}
+      modelVersion={scan.model_version}
+      scannedAt={scan.scanned_at}
       isGuest={false}
     />
   );
