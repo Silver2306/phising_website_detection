@@ -48,7 +48,6 @@ export default function GuestDashboard() {
         setMessage(result.error || "Scan failed.");
         return;
       }
-
       // Navigate to the dedicated guest result route.
       router.push(`/guest/${result.id}`);
     } catch (error) {

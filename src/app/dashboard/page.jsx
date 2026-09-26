@@ -16,31 +16,39 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  // Check if user is an admin
-  const { data: admin, error: adminError } = await supabase
-  .from("admins")
-  .select("user_id")
-  .eq("user_id", user.id)
-  .maybeSingle();
+  // Run dashboard queries together
+  const [
+    adminResult,
+    totalScansResult,
+    threatsBlockedResult,
+  ] = await Promise.all([
+    supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle(),
 
-  // Total scans
-  const { count: totalScans } = await supabase
-    .from("scans")
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("user_id", user.id);
+    supabase
+      .from("scans")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("user_id", user.id),
 
-  // Phishing scans
-  const { count: threatsBlocked } = await supabase
-    .from("scans")
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("user_id", user.id)
-    .eq("prediction", "phishing");
+    supabase
+      .from("scans")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("user_id", user.id)
+      .eq("prediction", "phishing"),
+  ]);
+
+  const admin = adminResult.data;
+  const totalScans = totalScansResult.count;
+  const threatsBlocked = threatsBlockedResult.count;
 
   return (
     <Dashboard

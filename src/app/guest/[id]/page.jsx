@@ -17,10 +17,11 @@ export default async function GuestResultPage({ params }) {
 
   const supabase = await createClient();
   const { data: scan } = await supabase
-    .from("scans")
-    .select("*")
-    .eq("id", id)
-    .single();
+  .from("scans")
+  .select("*")
+  .eq("id", id)
+  .is("user_id", null)
+  .single();
 
   if (!scan) {
     notFound();
@@ -31,6 +32,7 @@ export default async function GuestResultPage({ params }) {
       url={scan.url}
       prediction={scan.prediction}
       domainInfo={scan.domain_info}
+      features={scan.features}
       score={scan.confidence || "--"}
       modelVersion={scan.model_version}
       isGuest={true}

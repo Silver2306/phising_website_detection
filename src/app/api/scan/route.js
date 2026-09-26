@@ -43,19 +43,28 @@ export async function POST(request) {
         prediction: data.prediction,
         confidence: data.confidence ?? null,
         model_version: data.model_version ?? null,
+        features: data.features ?? null,
         domain_info: data.domain_info ?? null,
       })
       .select()
       .single();
 
-    if (error) {
+    if (error || !insertedData) {
       console.error("Could not save scan:", error);
+
+     return Response.json(
+        {
+          error: "Scan completed, but the result could not be saved.",
+        },
+        {
+          status: 500,
+      }
+    );
     }
 
-    // Include the scan ID in the response so the frontend can redirect to it
     const responseData = {
       ...data,
-      id: insertedData?.id || null,
+      id: insertedData.id,
     };
 
     return Response.json(responseData, {

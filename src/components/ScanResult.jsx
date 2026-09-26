@@ -2,50 +2,144 @@
 
 import { useRouter } from "next/navigation";
 
-import { FaArrowLeft, FaFlag, FaTriangleExclamation, FaUserPlus } from "react-icons/fa6";
+import {
+  FaArrowLeft,
+  FaFlag,
+  FaPrint,
+  FaTriangleExclamation,
+  FaCircleCheck,
+} from "react-icons/fa6";
 
 export default function ScanResult({
   url,
   prediction,
   domainInfo,
+  features,
   score = "--",
   modelVersion,
   scannedAt,
   isGuest = false,
 }) {
-
   const router = useRouter();
 
-  const isPhishing = prediction === "phishing";
+  const isPhishing =
+    prediction?.toLowerCase() === "phishing";
 
-  const indicators = domainInfo
-    ? [
-      {
-        name: "Domain Age",
-        meaning: `${domainInfo.domain_age_days} days`,
-        impact: domainInfo.domain_age_message,
-      },
-      {
-        name: "Registration Date",
-        meaning: domainInfo.creation_date
-          ? new Date(domainInfo.creation_date).toLocaleDateString()
+  const bannerClass = isPhishing
+    ? "bg-red-700 text-white"
+    : "bg-green-600 text-white";
+
+  const resultTitle = isPhishing
+    ? "Phishing Website"
+    : "Legitimate Website";
+
+  const resultMessage = isPhishing
+    ? "This URL appears to be suspicious."
+    : "This URL appears to be safe.";
+
+  const indicators = [];
+if (features) {
+  indicators.push(
+    {
+      name: "Domain Length",
+      meaning: features.domain_length,
+      impact: "Length of the website domain",
+    },
+    {
+      name: "URL Entropy",
+      meaning: features.url_entropy,
+      impact: "Measures randomness in the URL",
+    },
+    {
+      name: "WWW Count",
+      meaning: features.count_www,
+      impact: "Number of www occurrences",
+    },
+    {
+      name: "Average Word Length",
+      meaning: features.average_length_of_words,
+      impact: "Average length of URL words",
+    },
+    {
+      name: "URL Length",
+      meaning: features.url_length,
+      impact: "Total length of the URL",
+    },
+    {
+      name: "Path Slashes",
+      meaning: features.no_of_slashes_inpath,
+      impact: "Number of slashes in the URL path",
+    },
+    {
+      name: "Hostname Digit Ratio",
+      meaning: features.hostname_digit_ratio,
+      impact: "Ratio of digits in the hostname",
+    },
+    {
+      name: "Internal Links",
+      meaning: features.no_of_internal_links,
+      impact: "Number of links pointing within the same site",
+    },
+    {
+      name: "Free Hosting",
+      meaning: features.presence_of_free_hosting,
+      impact: "Indicates possible use of free hosting",
+    },
+    {
+      name: "Images",
+      meaning: features.no_of_Images,
+      impact: "Number of images found on the page",
+    },
+    {
+      name: "Title Domain Mismatch",
+      meaning: features.title_mismatch_with_domain,
+      impact: "Checks whether the page title matches the domain",
+    },
+    {
+      name: "Copyright Mismatch",
+      meaning: features.is_copyright_mismatch,
+      impact: "Checks for copyright information mismatch",
+    },
+    {
+      name: "External Script",
+      meaning: features.Script_loaded_from_ext_domain,
+      impact: "Checks whether scripts are loaded from another domain",
+    }
+  );
+}
+
+if (domainInfo) {
+  indicators.push(
+    {
+      name: "Domain Age",
+      meaning:
+        domainInfo.domain_age_days !== null &&
+        domainInfo.domain_age_days !== undefined
+          ? `${domainInfo.domain_age_days} days`
           : "Unavailable",
-        impact: "Domain creation date",
-      },
-      {
-        name: "Expiration Date",
-        meaning: domainInfo.expiration_date
-          ? new Date(domainInfo.expiration_date).toLocaleDateString()
-          : "Unavailable",
-        impact: "Registration expiry",
-      },
-      {
-        name: "Registrar",
-        meaning: domainInfo.registrar || "Unavailable",
-        impact: "Domain registrar",
-      },
-    ]
-    : [];
+      impact: domainInfo.domain_age_message || "Domain age information",
+    },
+    {
+      name: "Registration Date",
+      meaning: domainInfo.creation_date
+        ? new Date(domainInfo.creation_date).toLocaleDateString()
+        : "Unavailable",
+      impact: "Domain creation date",
+    },
+    {
+      name: "Expiration Date",
+      meaning: domainInfo.expiration_date
+        ? new Date(domainInfo.expiration_date).toLocaleDateString()
+        : "Unavailable",
+      impact: "Registration expiry",
+    },
+    {
+      name: "Registrar",
+      meaning: domainInfo.registrar || "Unavailable",
+      impact: "Domain registrar",
+    }
+  );
+}
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -125,7 +219,7 @@ export default function ScanResult({
                 {indicators.length === 0 ? (
                   <tr>
                     <td colSpan="3" className="p-6 text-center text-gray-500">
-                      Domain information unavailable
+                      Scan feature information unavailable
                     </td>
                   </tr>
                 ) : (

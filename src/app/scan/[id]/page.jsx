@@ -35,6 +35,7 @@ export default async function ScanResultPage({ params }) {
       url={scan.url}
       prediction={scan.prediction}
       domainInfo={scan.domain_info}
+      features={scan.features}
       score={scan.confidence || "--"}
       modelVersion={scan.model_version}
       scannedAt={scan.scanned_at}

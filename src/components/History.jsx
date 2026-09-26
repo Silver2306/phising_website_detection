@@ -139,7 +139,7 @@ export default function History({ scans }) {
 
                     {/* DATE */}
                     <td className="p-4 text-gray-500">
-                      {new Date(scan.scanned_at).toLocaleString()}
+                      {new Date(scan.scanned_at).toLocaleString("en-US")}
                     </td>
 
                     {/* PREDICTION */}

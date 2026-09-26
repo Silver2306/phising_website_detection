@@ -60,8 +60,9 @@ def scan_cp():
             "prediction": scan_result["prediction"],
             "confidence": scan_result["confidence"],
             "model_version": scan_result["model_version"],
+            "features": scan_result["extracted_features"],
             "domain_info": rdap_info
-        })
+            })
 
     except requests.RequestException as e:
 
