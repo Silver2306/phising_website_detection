@@ -270,7 +270,7 @@ export default function ScanResult({
             {/* Actions Card — logged-in users only */}
             {!isGuest && (
               <div className="bg-white border rounded-xl p-5 shadow-sm">
-                <h2 className="font-bold text-black mb-4 text-base">Required Actions</h2>
+                <h2 className="font-bold text-black mb-4 text-base">Possible Action</h2>
 
                 <button
                   onClick={() => router.push(`/report?url=${encodeURIComponent(url)}`)}
