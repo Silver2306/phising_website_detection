@@ -70,7 +70,6 @@ export default function UpdatePassword() {
     }
 
     router.replace("/dashboard");
-    router.refresh();
   }
 
   return (

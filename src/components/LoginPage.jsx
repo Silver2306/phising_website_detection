@@ -69,7 +69,6 @@ export default function LoginPage() {
   }
 
   router.replace("/dashboard");
-  router.refresh();
 }
 
   const router = useRouter();

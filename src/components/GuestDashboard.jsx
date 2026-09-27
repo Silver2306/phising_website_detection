@@ -150,22 +150,22 @@ export default function GuestDashboard() {
               {/* Phase 1 */}
               <div className="bg-white border rounded-xl p-5 shadow-2xl">
                 <p className="text-xs font-semibold text-red-600">PHASE 01</p>
-                <h3 className="font-semibold text-black mt-2">URL Structure</h3>
-                <p className="text-sm text-gray-500 mt-2">Lexical entropy & typosquatting detection.</p>
+                <h3 className="font-semibold text-black mt-2">URL Lexical Analysis</h3>
+                <p className="text-sm text-gray-500 mt-2">URL length, entropy, path depth, and digit ratio.</p>
               </div>
 
               {/* Phase 2 */}
               <div className="bg-white border rounded-xl p-5 shadow-2xl">
                 <p className="text-xs font-semibold text-red-600">PHASE 02</p>
-                <h3 className="font-semibold text-black mt-2">Domain & SSL</h3>
-                <p className="text-sm text-gray-500 mt-2">Registration records & certificate validation.</p>
+                <h3 className="font-semibold text-black mt-2">Domain WHOIS Lookup</h3>
+                <p className="text-sm text-gray-500 mt-2">Domain creation, expiration date, age, and registrar authority.</p>
               </div>
 
               {/* Phase 3 */}
               <div className="bg-white border rounded-xl p-5 shadow-2xl">
                 <p className="text-xs font-semibold text-red-600">PHASE 03</p>
-                <h3 className="font-semibold text-black mt-2">HTML Parsing</h3>
-                <p className="text-sm text-gray-500 mt-2">Safe extraction of forms and external links.</p>
+                <h3 className="font-semibold text-black mt-2">HTML & DOM Content</h3>
+                <p className="text-sm text-gray-500 mt-2">Internal link density, image counts, title consistency, and external scripts.</p>
               </div>
 
             </div>
@@ -188,7 +188,7 @@ export default function GuestDashboard() {
               <ul className="text-sm text-gray-700 space-y-3 mb-6">
                 <li className="flex items-start gap-2">
                   <span className="text-red-600 font-bold mt-0.5">✓</span>
-                  <span>Full scan history — revisit every URL you've analysed.</span>
+                  <span>Full scan history — revisit every URL you've analyzed.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-600 font-bold mt-0.5">✓</span>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { createClient } from "../lib/supabase/client";
 
@@ -16,16 +17,21 @@ import {
 export default function Admin({ user, reports }) {
   const router = useRouter();
 
+  const [reportList, setReportList] = useState(reports || []);
   const [updatingId, setUpdatingId] = useState(null);
   const [message, setMessage] = useState("");
 
-  const pendingReports = reports.filter(
+  useEffect(() => {
+    setReportList(reports || []);
+  }, [reports]);
+
+  const pendingReports = reportList.filter(
     (report) =>
       !report.status ||
       report.status === "pending"
   );
 
-  const reviewedReports = reports.filter(
+  const reviewedReports = reportList.filter(
     (report) =>
       report.status === "verified" ||
       report.status === "rejected" ||
@@ -42,43 +48,52 @@ export default function Admin({ user, reports }) {
   }
 
   async function updateReportStatus(reportId, status) {
-  setUpdatingId(reportId);
-  setMessage("");
+    setUpdatingId(reportId);
+    setMessage("");
 
-  try {
-    const response = await fetch(
-      `/api/admin/reports/${reportId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status,
-        }),
-      }
-    );
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      setMessage(
-        result.error || "Could not update the report."
+    try {
+      const response = await fetch(
+        `/api/admin/reports/${reportId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status,
+          }),
+        }
       );
-      return;
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(
+          result.error || "Could not update the report."
+        );
+        return;
+      }
+
+      const now = new Date().toISOString();
+      setReportList((prev) =>
+        prev.map((item) =>
+          item.id === reportId
+            ? { ...item, status, reviewed_at: now }
+            : item
+        )
+      );
+
+      setMessage(`Report marked as ${status}.`);
+
+      router.refresh();
+    } catch (error) {
+      console.error("Report update error:", error);
+
+      setMessage("Could not update the report.");
+    } finally {
+      setUpdatingId(null);
     }
-
-    setMessage(`Report marked as ${status}.`);
-
-    router.refresh();
-  } catch (error) {
-    console.error("Report update error:", error);
-
-    setMessage("Could not update the report.");
-  } finally {
-    setUpdatingId(null);
   }
-}
 
   const adminName =
     user?.user_metadata?.full_name ||
@@ -129,13 +144,13 @@ export default function Admin({ user, reports }) {
 
       <main className="max-w-screen-xl mx-auto px-6 py-8">
         {/* BACK TO DASHBOARD */}
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="border rounded-lg px-4 py-2 flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600 mb-6 bg-white shadow-sm"
+        <Link
+          href="/dashboard"
+          className="inline-flex border rounded-lg px-4 py-2 items-center gap-2 text-sm font-semibold text-gray-600 hover:text-red-600 mb-6 bg-white shadow-sm transition"
         >
           <FaArrowLeft />
           Dashboard
-        </button>
+        </Link>
 
         {/* PAGE TITLE */}
         <div className="mb-8">
@@ -180,7 +195,7 @@ export default function Admin({ user, reports }) {
             </p>
 
             <p className="text-3xl font-bold text-black mt-2">
-              {reports.length}
+              {reportList.length}
             </p>
           </div>
         </div>
@@ -255,11 +270,11 @@ export default function Admin({ user, reports }) {
                         {report.context || "--"}
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap">
+                      <td className="px-5 py-4 text-sm text-gray-500 whitespace-nowrap" suppressHydrationWarning>
                         {report.submitted_at
                           ? new Date(
-                              report.submitted_at
-                            ).toLocaleString()
+                            report.submitted_at
+                          ).toLocaleString()
                           : "--"}
                       </td>
 
@@ -377,7 +392,7 @@ export default function Admin({ user, reports }) {
                       <td className="px-5 py-4">
                         <span
                           className={
-                            report.status === "verified"
+                            report.status?.toLowerCase() === "verified" || report.status?.toLowerCase() === "approved"
                               ? "text-red-600 font-semibold"
                               : "text-gray-600 font-semibold"
                           }
@@ -386,11 +401,11 @@ export default function Admin({ user, reports }) {
                         </span>
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-gray-500">
+                      <td className="px-5 py-4 text-sm text-gray-500" suppressHydrationWarning>
                         {report.reviewed_at
                           ? new Date(
-                              report.reviewed_at
-                            ).toLocaleString()
+                            report.reviewed_at
+                          ).toLocaleString()
                           : "--"}
                       </td>
                     </tr>

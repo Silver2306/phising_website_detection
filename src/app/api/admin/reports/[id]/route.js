@@ -62,13 +62,14 @@ export async function PATCH(request, { params }) {
       console.error("Report update error:", error);
 
       return Response.json(
-        { error: "Could not update report" },
+        { error: error.message || "Could not update report" },
         { status: 500 }
       );
     }
 
     return Response.json({
       success: true,
+      status,
     });
   } catch (error) {
     console.error("Admin report API error:", error);

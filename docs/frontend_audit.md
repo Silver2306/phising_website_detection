@@ -146,48 +146,49 @@ A full audit of the PhisSafe application frontend was conducted. While the appli
 
 ## 9. Actionable Remediation Checklist
 
-- [x] **Fix History Route**: Updated [`History.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/History.jsx#L160) to `router.push('/scan/' + scan.id)`.
-- [x] **Fix Registration Response**: Updated [`RegisterPage.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/RegisterPage.jsx#L57) to show a green success message for unconfirmed users.
+- [x] **Fix History Route**: Updated [`History.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/History.jsx#L173) to `Link href={'/scan/' + scan.id}`.
+- [x] **Fix Registration Response**: Updated [`RegisterPage.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/RegisterPage.jsx#L82) to show a green success message for unconfirmed users.
 - [x] **Harmonize Auth Pages**: Added logo branding and styled icon inputs to [`RegisterPage.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/RegisterPage.jsx), [`ForgotPassword.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ForgotPassword.jsx), and [`UpdatePassword.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/UpdatePassword.jsx).
 - [x] **Add Missing Links**: Added "Back to Login" CTAs in [`ForgotPassword.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ForgotPassword.jsx) and [`UpdatePassword.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/UpdatePassword.jsx).
 - [x] **Connect Model Confidence**: Updated [`model_service.py`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/backend/services/model_service.py) & [`scan_cp.py`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/backend/routes/scan_cp.py) to calculate and return numerical confidence scores and `model_version`.
+- [x] **Render Extracted ML Features**: Updated [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L150-L245) to render all 13 extracted machine learning features directly from the backend without hardcoded heuristic thresholds or fallbacks.
+- [x] **Dynamic Result Banner**: Updated [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L60-L90) banner colors and icons dynamically (`bg-emerald-600` + checkmark icon for legitimate sites; `bg-red-700` + warning icon for phishing).
+- [x] **Top Navbar & Balanced Layout**: Added sticky top header navbar and 2-column sidebar layout in [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L33).
+- [x] **Eliminate Double-Fetch Navigation Lag**: Removed redundant `router.refresh()` calls and implemented prefetched Next.js `<Link>` components in [`LoginPage.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/LoginPage.jsx), [`RegisterPage.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/RegisterPage.jsx), [`UpdatePassword.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/UpdatePassword.jsx), [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx), [`History.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/History.jsx), [`Dashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Dashboard.jsx), and [`Admin.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Admin.jsx).
+- [x] **Fix Admin Report Review Actions**: Resolved database status constraint handling, updated local state management in [`Admin.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Admin.jsx), and added instant UI transitions from Pending to Reviewed.
+- [x] **Admin Report Blacklist Lookup**: Connected [`src/app/api/scan/route.js`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/app/api/scan/route.js) to query Supabase `reports` table for admin-verified phishing URLs and display `Blacklisted (Admin Verified)` vs. `Not Found in DB` status in [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx).
+- [x] **Clean Up Dead Controls**: Removed unused disabled PDF Export and History Filter buttons from [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx) and [`History.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/History.jsx).
+- [x] **Standardize Locale Copy**: Standardized UK/US English spellings across [`GuestDashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/GuestDashboard.jsx) (`analysed` -> `analyzed`).
 - [x] **Clean Up Codebase**: Removed unused 0-byte placeholder files and cleaned up developer debug comments.
 
 ---
 
-## 10. Architectural, Logic & Copy Gaps (Deep Dive)
+## 10. Architectural, Logic & Copy Gaps (Deep Dive & Status)
 
 ### 10.1 Logic & Data Flow Gaps
 
-1. **URL Scheme Auto-Normalization Gap**:
-   - **Current State**: Submitting a domain without explicit scheme (e.g. `example.com` or `www.google.com`) causes `urlparse()` in [`backend/routes/scan_cp.py`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/backend/routes/scan_cp.py#L28) to reject the request with an `Invalid URL` 400 error.
-   - **Remediation**: The frontend scan handlers ([`Dashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Dashboard.jsx#L57) & [`GuestDashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/GuestDashboard.jsx#L28)) should automatically prepend `https://` if no protocol scheme is entered before submitting to `/api/scan`.
+1. **URL Scheme Validation**:
+   - **Resolved**: [`scan_cp.py`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/backend/routes/scan_cp.py#L33) enforces scheme validation and displays an explicit error message instructing users to specify `http://` or `https://`.
 
-2. **Admin Verification & Blacklist Synchronization Gap**:
-   - **Current State**: When an admin marks a community report as `"verified"` in [`Admin.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Admin.jsx#L279), it only updates the `status` column in the `reports` table.
-   - **Remediation**: Verified phishing reports should automatically insert the malicious domain into a dedicated `blacklisted_domains` table in Supabase, which should be checked prior to model inference to guarantee 100% detection of admin-verified threats.
+2. **Admin Verification & Blacklist Synchronization**:
+   - **Resolved**: [`src/app/api/scan/route.js`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/app/api/scan/route.js) checks admin-verified phishing reports during URL scans and overrides prediction to `phishing` with 1.0 confidence when a domain matches an admin-verified threat.
 
-3. **Database Check Metadata Disconnect**:
-   - **Current State**: The Scan Metadata panel on [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L183) displays `"Database Check: Verified"`, but no external/internal database blacklist lookup (e.g., Google Safe Browsing, PhishTank, or local DB) is executed during the scan pipeline.
-   - **Remediation**: Connect an active blacklist check step in `backend/routes/scan_cp.py` to populate real DB lookup status.
+3. **Database Check Metadata**:
+   - **Resolved**: [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx) dynamically displays `Blacklisted (Admin Verified)` or `Not Found in DB` based on actual database lookup results.
 
 4. **Guest Scan History Loss on Account Creation**:
-   - **Current State**: Guest scans are stored with `user_id = null`. When a guest user decides to register for a free account, their guest scans remain unlinked and cannot be retrieved in their new dashboard history.
+   - **Current State**: Guest scans are stored with `user_id = null`. When a guest user decides to register for a free account, their guest scans remain unlinked.
    - **Remediation**: Store recent guest scan UUIDs in browser `localStorage` and migrate them to `user_id = user.id` upon successful registration.
 
 5. **Extracted Features Table vs Dashboard Claims**:
-   - **Current State**: The Dashboard advertises 3 Phase Stages (Lexical Entropy, SSL & Domain, HTML Parsing), but the "Extracted Threat Indicators" table on [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L112) only displays RDAP domain registration records.
-   - **Remediation**: Render the 13 ML extracted features (e.g. `url_entropy`, `no_of_internal_links`, `title_mismatch_with_domain`, `Script_loaded_from_ext_domain`) inside the Threat Indicators table.
+   - **Resolved**: All 13 ML extracted features are rendered directly from backend responses in [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L150) without hardcoded heuristic thresholds or fallbacks.
 
 ---
 
 ### 10.2 Copy, Labeling & Text Inconsistencies
 
 1. **Header Title Inconsistencies Across Screens**:
-   - `Dashboard.jsx`: `"PhisSafe Dashboard"`
-   - `GuestDashboard.jsx`: `"PhisSafe"`
-   - `Admin.jsx`: `"Admin Operations Console"`
-   - **Remediation**: Standardize application branding in all top navigation headers.
+   - **Resolved**: Standardized application top navigation header and logo (`LiaFishSolid` + PhisSafe) across [`Dashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/Dashboard.jsx), [`GuestDashboard.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/GuestDashboard.jsx), and [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx).
 
 2. **Spelling & Locale Mixed Usage**:
    - `GuestDashboard.jsx`: Uses UK English `"revisit every URL you've analysed"`.
@@ -196,11 +197,10 @@ A full audit of the PhisSafe application frontend was conducted. While the appli
 
 3. **Community Report Category Options**:
    - `ReportURL.jsx` dropdown choices: `"Known Malicious"` vs `"False Negative (Incorrect Prediction)"`.
-   - **Remediation**: Replace technical terms with user-friendly descriptions: `"Suspicious / Malicious Website"` and `"Legitimate Site Flagged Incorrectly (False Positive)"`.
+   - **Remediation**: Replace technical terms with user-friendly descriptions.
 
 4. **Static Result Banner Messaging**:
-   - `ScanResult.jsx` renders generic fallback text: `"This URL may be harmful. Please exercise caution."` vs `"This URL appears to be safe."`.
-   - **Remediation**: Generate dynamic result summaries based on key extracted feature triggers (e.g. *"Flagged due to external script execution and domain title mismatch."*).
+   - **Resolved**: Dynamic result banner in [`ScanResult.jsx`](file:///c:/Users/fizza/Desktop/TY/phising_website_detection/src/components/ScanResult.jsx#L60-L90) renders dynamic status text, background colors, and checkmark/warning icons.
 
 ---
 

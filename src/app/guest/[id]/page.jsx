@@ -35,6 +35,7 @@ export default async function GuestResultPage({ params }) {
       features={scan.features}
       score={scan.confidence || "--"}
       modelVersion={scan.model_version}
+      databaseCheck={scan.domain_info?.database_check}
       isGuest={true}
     />
   );

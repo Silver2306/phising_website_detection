@@ -30,7 +30,7 @@ def scan_cp():
         or not parsed_url.netloc
     ):
         return jsonify({
-            "error": "Invalid URL"
+            "error": "Invalid URL. Please include the protocol scheme (http:// or https://)."
         }), 400
 
     try:

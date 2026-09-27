@@ -39,6 +39,7 @@ export default async function ScanResultPage({ params }) {
       score={scan.confidence || "--"}
       modelVersion={scan.model_version}
       scannedAt={scan.scanned_at}
+      databaseCheck={scan.domain_info?.database_check}
       isGuest={false}
     />
   );

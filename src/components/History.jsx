@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import {
   FaArrowLeft,
@@ -39,13 +40,13 @@ export default function History({ scans }) {
           </div>
 
           {/* BACK TO DASHBOARD */}
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600"
+          <Link
+            href="/dashboard"
+            className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600 bg-white shadow-sm"
           >
             <FaArrowLeft />
             Dashboard
-          </button>
+          </Link>
         </div>
 
         {/* SEARCH AND FILTER */}
@@ -168,12 +169,11 @@ export default function History({ scans }) {
 
                     {/* VIEW REPORT */}
                     <td className="p-4">
-                      <button
-                        onClick={() =>
-                        router.push(`/scan/${scan.id}`)}
-                        className="text-red-600 font-semibold">
+                      <Link
+                        href={`/scan/${scan.id}`}
+                        className="text-red-600 font-semibold hover:underline">
                         View Report
-                      </button>
+                      </Link>
                     </td>
 
                   </tr>

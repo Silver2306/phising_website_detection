@@ -77,7 +77,6 @@ export default function RegisterPage() {
       setMessage("Account created successfully! Redirecting...");
       setTimeout(() => {
         router.push("/dashboard");
-        router.refresh();
       }, 1200);
     } else if (data.user && !data.session) {
       setMessage(

@@ -34,6 +34,47 @@ export async function POST(request) {
       data: { user },
     } = await supabase.auth.getUser();
 
+    // Check if domain is in admin-verified blacklist reports
+    let databaseCheckStatus = "Not Found in DB";
+    if (body.url) {
+      try {
+        const targetDomain = body.url
+          .replace(/^https?:\/\//i, "")
+          .split("/")[0]
+          .toLowerCase();
+
+        const { data: verifiedReports } = await supabase
+          .from("reports")
+          .select("id, url")
+          .eq("status", "verified");
+
+        if (verifiedReports && verifiedReports.length > 0) {
+          const isBlacklisted = verifiedReports.some((report) => {
+            if (!report.url) return false;
+            const reportDomain = report.url
+              .replace(/^https?:\/\//i, "")
+              .split("/")[0]
+              .toLowerCase();
+            return reportDomain === targetDomain;
+          });
+
+          if (isBlacklisted) {
+            databaseCheckStatus = "Blacklisted (Admin Verified)";
+            // Override prediction for admin-verified threat
+            data.prediction = "phishing";
+            data.confidence = 1.0;
+          }
+        }
+      } catch (err) {
+        console.error("Blacklist lookup error:", err);
+      }
+    }
+
+    const updatedDomainInfo = {
+      ...(data.domain_info || {}),
+      database_check: databaseCheckStatus,
+    };
+
     // Save for both logged-in users and guests
     const { data: insertedData, error } = await supabase
       .from("scans")
@@ -44,7 +85,7 @@ export async function POST(request) {
         confidence: data.confidence ?? null,
         model_version: data.model_version ?? null,
         features: data.features ?? null,
-        domain_info: data.domain_info ?? null,
+        domain_info: updatedDomainInfo,
       })
       .select()
       .single();
@@ -64,6 +105,7 @@ export async function POST(request) {
 
     const responseData = {
       ...data,
+      domain_info: updatedDomainInfo,
       id: insertedData.id,
     };
 
