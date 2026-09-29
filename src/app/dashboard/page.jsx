@@ -16,42 +16,46 @@ export default async function DashboardPage() {
     redirect("/");
   }
 
-  // Get user's role
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+  // Run dashboard queries together
+  const [
+    adminResult,
+    totalScansResult,
+    threatsBlockedResult,
+  ] = await Promise.all([
+    supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle(),
 
-  // Admin goes to admin dashboard
-  if (profile?.role === "admin") {
-    redirect("/admin");
-  }
+    supabase
+      .from("scans")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("user_id", user.id),
 
-  // Total scans
-  const { count: totalScans } = await supabase
-    .from("scans")
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("user_id", user.id);
+    supabase
+      .from("scans")
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
+      .eq("user_id", user.id)
+      .eq("prediction", "phishing"),
+  ]);
 
-  // Phishing scans
-  const { count: threatsBlocked } = await supabase
-    .from("scans")
-    .select("*", {
-      count: "exact",
-      head: true,
-    })
-    .eq("user_id", user.id)
-    .eq("prediction", "phishing");
+  const admin = adminResult.data;
+  const totalScans = totalScansResult.count;
+  const threatsBlocked = threatsBlockedResult.count;
 
   return (
     <Dashboard
       user={user}
       totalScans={totalScans ?? 0}
       threatsBlocked={threatsBlocked ?? 0}
+      isAdmin={!!admin}
     />
   );
 }

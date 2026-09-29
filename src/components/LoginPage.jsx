@@ -9,6 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import { MdOutlineMailOutline } from 'react-icons/md';
 import { RiLockPasswordLine } from 'react-icons/ri';
 import { LiaFishSolid } from "react-icons/lia";
+import { FaUserSecret } from "react-icons/fa6";
 
 function IconButton({ children, text, iconColor }) {
   return (
@@ -68,7 +69,6 @@ export default function LoginPage() {
   }
 
   router.replace("/dashboard");
-  router.refresh();
 }
 
   const router = useRouter();
@@ -84,26 +84,26 @@ export default function LoginPage() {
     w-full h-screen bg-slate-50'>
 
       {/*CONTAINER*/}
-      <div className='form-container overflow-hidden rounded-2xl flex shadow-2xl justify-between w-11/12 max-w-screen-xl'>
+      <div className='form-container overflow-hidden rounded-2xl flex flex-col lg:flex-row shadow-2xl justify-between w-10/12 max-w-screen-xl'>
 
         {/*Left Side*/}
-        <div className='form-section w-1/2 px-24 py-14'>
+        <div className='form-section w-full lg:w-1/2 px-8 sm:px-12 lg:px-16 py-10 sm:py-14'>
 
           {/* MAIN FORM CONTAIN IS HERE */}
 
           <div className='logo flex justify-left gap-x-1 items-center'>
-            <LiaFishSolid className="text-red-600 text-2xl" />
-            <span>PhisSafe</span>
+            <LiaFishSolid className="text-red-600 text-4xl" />
+            <span className="text-2xl font-semibold">PhisSafe</span>
           </div>
 
-          <h1 className='text-3xl font-semibold mt-6 opacity-80 text-black'>
+          <h1 className='text-3xl font-semibold mt-6 opacity-80 text-black pb-6'>
             Log in to your Account
           </h1>
-          <p className='text-black opacity-60 mt-3'>
-            Welcome! Select mothod to login:
-          </p>
+          
+
 
           {/*LOGIN BUTTONS*/}
+          {/*}
           <div className='oath-button flex justify-between gap-x-5 mt-8'>
             <IconButton text='Google' iconColor='#fff'>
               <FcGoogle />
@@ -113,7 +113,7 @@ export default function LoginPage() {
             </IconButton>
           </div>
 
-          <span className='block text-center opacity-70 mt-4 mb-10 text-gray-800'>or continue with email</span>
+          <span className='block text-center opacity-70 mt-4 mb-10 text-gray-800'>or continue with email</span> */}
 
           <form onSubmit={handleLogin}>
 
@@ -126,7 +126,7 @@ export default function LoginPage() {
             </IconInput>
           
 
-          <div className='flex justify-between items-center mt-3'>
+          <div className='flex justify-between items-center mt-5'>
             <div className='item text-blue-600'>
               <Link href="/forgot-password">
                 Forgot Password?
@@ -136,35 +136,52 @@ export default function LoginPage() {
 
 
 
-          <p className='text-center mt-6 text-neutral-500'>Don't have an account?
-            <a href='/register' className='text-blue-500'>Create an account</a>
+          <p className="text-center mt-4 text-sm text-gray-500">
+            Don't have an account?{" "}
+            <Link href="/register" className="text-red-600 font-semibold hover:underline">
+              Create an account
+            </Link>
           </p>
 
           {error && (
-            <p className="text-red-600 text-sm mt-3">
-            {error}
-            </p>
+            <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mt-3">
+              {error}
+            </div>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white w-full py-4 rounded mt-5 text-xl">
-            {loading ? "Logging in..." : "Login"}
-          </button>
-
-          <div className="text-center mt-4">
-            <Link href="/guest" className="text-sm text-gray-400 hover:text-gray-700 underline underline-offset-2">
-              Continue as Guest
-            </Link>
+          <div className="mt-5">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white font-semibold w-full py-3.5 rounded-lg text-lg transition shadow-md"
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
           </div>
+
+          {/* DIVIDER */}
+          <div className="flex items-center my-5">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="px-3 text-xs text-gray-400 font-semibold tracking-wider uppercase">Or</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          {/* GUEST BUTTON */}
+          <button
+            type="button"
+            onClick={() => router.push("/guest")}
+            className="w-full py-3 border border-gray-300 hover:border-red-600 hover:text-red-600 text-gray-700 font-semibold rounded-lg flex items-center justify-center gap-2 transition bg-white shadow-sm"
+          >
+            <FaUserSecret className="text-gray-500 text-lg" />
+            Continue as Guest
+          </button>
 
         </form>
         
         </div>
 
         {/*Rigth Side*/}
-        <div className='illustration-section w-1/2 bg-red-700'>
+        <div className='illustration-section hidden lg:block lg:w-1/2 bg-red-700'>
           {/*Illustration part wrap*/}
           <div className='illu-wrap'>
             <img src="/assets/illu-main.png" alt='' />

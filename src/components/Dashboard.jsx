@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "../lib/supabase/client";
 
 import {
@@ -13,9 +14,12 @@ import {
 
 import { LiaFishSolid } from "react-icons/lia";
 
-export default function Dashboard({ user,
+export default function Dashboard({
+  user,
   totalScans,
-  threatsBlocked,  }) {
+  threatsBlocked,
+  isAdmin,
+}) {
   const router = useRouter();
 
   const [url, setUrl] = useState("");
@@ -82,9 +86,7 @@ export default function Dashboard({ user,
       }
 
       // Redirect to results page
-      router.push(
-        `/scan/result?url=${encodeURIComponent(finalUrl)}&prediction=${encodeURIComponent(result.prediction)}`
-      );
+      router.push(`/scan/${result.id}`);
 
     } catch (error) {
       setMessage("Could not connect to the scanning service.");
@@ -109,23 +111,36 @@ export default function Dashboard({ user,
 
           {/* Logged-in User */}
           <div className="flex items-center gap-4">
+          <div className="hidden sm:block text-right">
+          <p className="text-sm font-semibold text-black">
+            {name}
+          </p>
 
-            <div className="hidden sm:block text-right">
-              <p className="text-sm font-semibold text-black">{name}</p>
+          <p className="text-xs text-gray-500">{user.email}</p>
+          </div>
 
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
+          <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold">
+            {initials}
+          </div>
 
-            {/* User Initials */}
-            <div className="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold">{initials}</div>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="border border-red-600 text-red-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-50 transition"
+            >
+              Admin Panel
+            </Link>
+          )}
 
-            {/* Logout */}
-            <button
-              onClick={handleLogout} disabled={isScanning} className="flex items-center gap-2 text-gray-600 hover:text-red-600">
-              <FaRightFromBracket />
-              <span className="hidden sm:block">Logout</span>
-            </button>
-
+          <button
+            onClick={handleLogout}
+            disabled={isScanning}
+            className="flex items-center gap-2 text-gray-600 hover:text-red-600">
+            <FaRightFromBracket />
+            <span className="hidden sm:block">
+              Logout
+            </span>
+          </button>
           </div>
         </div>
       </header>
@@ -197,9 +212,9 @@ export default function Dashboard({ user,
 
                 <p className="text-xs font-semibold text-red-600">PHASE 01</p>
 
-                <h3 className="font-semibold text-black mt-2">URL Structure</h3>
+                <h3 className="font-semibold text-black mt-2">URL Lexical Analysis</h3>
 
-                <p className="text-sm text-gray-500 mt-2">Lexical entropy & typosquatting detection.</p>
+                <p className="text-sm text-gray-500 mt-2">URL length, entropy, path depth, and digit ratio.</p>
 
               </div>
               {/* Phase 2 */}
@@ -207,9 +222,9 @@ export default function Dashboard({ user,
 
                 <p className="text-xs font-semibold text-red-600">PHASE 02</p>
 
-                <h3 className="font-semibold text-black mt-2">Domain & SSL</h3>
+                <h3 className="font-semibold text-black mt-2">Domain WHOIS Lookup</h3>
 
-                <p className="text-sm text-gray-500 mt-2">Registration records & certificate validation.</p>
+                <p className="text-sm text-gray-500 mt-2">Domain creation, expiration date, age, and registrar authority.</p>
 
               </div>
 
@@ -218,9 +233,9 @@ export default function Dashboard({ user,
 
                 <p className="text-xs font-semibold text-red-600">PHASE 03</p>
 
-                <h3 className="font-semibold text-black mt-2">HTML Parsing</h3>
+                <h3 className="font-semibold text-black mt-2">HTML & DOM Content</h3>
 
-                <p className="text-sm text-gray-500 mt-2">Safe extraction of forms and external links.</p>
+                <p className="text-sm text-gray-500 mt-2">Internal link density, image counts, title consistency, and external scripts.</p>
 
               </div>
 
@@ -258,9 +273,9 @@ export default function Dashboard({ user,
               <hr className="my-6" />
 
               {/* History */}
-              <button onClick={() => router.push("/history")} className="w-full border rounded-lg py-3 text-gray-500 hover:text-red-600">
+              <Link href="/history" className="block text-center w-full border rounded-lg py-3 text-gray-500 hover:text-red-600 font-medium transition bg-white">
                 View Full History
-              </button>
+              </Link>
 
             </div>
 

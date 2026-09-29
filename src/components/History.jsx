@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import {
   FaArrowLeft,
@@ -13,10 +14,14 @@ export default function History({ scans }) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
-  const filteredScans = scans.filter((scan) =>
-    scan.url.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredScans = scans.filter((scan) => {
+    const matchesSearch = scan.url.toLowerCase().includes(search.toLowerCase());
+    const matchesFilter =
+      filter === "all" || scan.prediction === filter;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -35,13 +40,13 @@ export default function History({ scans }) {
           </div>
 
           {/* BACK TO DASHBOARD */}
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600"
+          <Link
+            href="/dashboard"
+            className="border rounded-lg px-4 py-2 flex items-center gap-2 text-gray-600 hover:text-red-600 bg-white shadow-sm"
           >
             <FaArrowLeft />
             Dashboard
-          </button>
+          </Link>
         </div>
 
         {/* SEARCH AND FILTER */}
@@ -61,18 +66,23 @@ export default function History({ scans }) {
           </div>
 
           {/* FILTER */}
-          <button
-            disabled
-            className="border rounded-lg px-4 h-10 flex items-center gap-2 text-gray-500"
-          >
-            <FaFilter />
-            Filter
-          </button>
+          <div className="relative flex items-center">
+            <FaFilter className="absolute left-3 text-gray-500 pointer-events-none" />
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="border rounded-lg h-10 pl-9 pr-4 bg-white text-black outline-none font-medium cursor-pointer hover:border-red-500 transition"
+            >
+              <option value="all">All Predictions</option>
+              <option value="phishing">Phishing Only</option>
+              <option value="legitimate">Legitimate Only</option>
+            </select>
+          </div>
         </div>
 
         {/* HISTORY TABLE */}
-        <div className="bg-white border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-white border rounded-xl overflow-x-auto">
+          <table className="w-full min-w-[700px] text-sm">
 
             {/* TABLE HEADER */}
             <thead className="bg-gray-50 border-b">
@@ -130,7 +140,7 @@ export default function History({ scans }) {
 
                     {/* DATE */}
                     <td className="p-4 text-gray-500">
-                      {new Date(scan.scanned_at).toLocaleString()}
+                      {new Date(scan.scanned_at).toLocaleString("en-US")}
                     </td>
 
                     {/* PREDICTION */}
@@ -148,27 +158,22 @@ export default function History({ scans }) {
 
                     {/* SCORE */}
                     <td className="p-4 font-semibold text-black">
-                      {scan.confidence !== null
-                        ? scan.confidence
+                      {scan.confidence !== null && scan.confidence !== undefined
+                        ? typeof scan.confidence === "number"
+                          ? scan.confidence <= 1
+                            ? `${(scan.confidence * 100).toFixed(1)}%`
+                            : `${scan.confidence}%`
+                          : `${scan.confidence}`
                         : "--"}
                     </td>
 
                     {/* VIEW REPORT */}
                     <td className="p-4">
-                      <button
-                        onClick={() =>
-                          router.push(
-                            `/scan/result?url=${encodeURIComponent(
-                              scan.url
-                            )}&prediction=${encodeURIComponent(
-                              scan.prediction
-                            )}`
-                          )
-                        }
-                        className="text-red-600 font-semibold"
-                      >
+                      <Link
+                        href={`/scan/${scan.id}`}
+                        className="text-red-600 font-semibold hover:underline">
                         View Report
-                      </button>
+                      </Link>
                     </td>
 
                   </tr>
